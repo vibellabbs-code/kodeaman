@@ -1,0 +1,42 @@
+# .kodeaman.yml — Local CLI Usage
+#
+# Use this configuration for local development scanning with the CLI.
+# Place this file as `.kodeaman.yml` in your project root.
+#
+# Run: kodeaman scan
+# Run: kodeaman owasp-scan
+
+# Language for user-facing output and coaching
+# Options: "en" (English), "id" (Bahasa Indonesia)
+language: id
+
+# Scanner selection
+# Enable or disable individual scanners based on your environment
+scanners:
+  semgrep: true          # SAST static analysis (requires: pip install semgrep)
+  zapBaseline: false     # DAST baseline scan (requires: Docker + ZAP image)
+  # zapTargetUrl: ""     # Required when zapBaseline is true — the URL to scan
+  npmAudit: true         # npm dependency vulnerability check (requires: npm)
+
+# Framework presets — empty list means no preset
+# Options: "laravel", "node-express", "wordpress"
+presets: []
+# presets:
+#   - node-express
+
+# Finding prioritization and CI behavior
+prioritization:
+  maxFindingsInComment: 3    # Max findings shown in PR/MR comments
+  failOnSeverity: critical   # Exit code 1 if findings at or above this level
+                              # Options: info, low, medium, high, critical
+
+# Gamification — XP, badges, streaks, and quests
+gamification:
+  enabled: true
+
+# Output format toggles
+output:
+  markdown: true     # Console/PR comment output
+  sarif: false       # SARIF format (for GitHub Code Scanning)
+  json: false        # Raw JSON output
+  html: false        # Self-contained HTML evidence report

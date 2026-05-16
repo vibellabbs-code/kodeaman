@@ -1,0 +1,82 @@
+# .kodeaman.yml — OWASP Top 10 Scan Mode
+#
+# Use this configuration for structured OWASP Top 10 scanning.
+# Produces evidence-backed reports organized by OWASP category (A01–A10).
+#
+# Run: kodeaman owasp-scan
+# Run: kodeaman owasp-scan --format html --output report.html
+
+# Language for reports and coaching
+language: id
+
+# Scanner selection — enable all available scanners for maximum coverage
+scanners:
+  semgrep: true          # SAST — covers A01, A02, A03, A04, A05, A07, A08, A10
+  zapBaseline: true      # DAST — covers A01, A03, A05, A07, A09 (requires running target)
+  zapTargetUrl: "http://localhost:3000"   # Target URL for ZAP baseline scan
+  npmAudit: true         # Dependency scanner — covers A06 (Vulnerable Components)
+
+# Framework preset (optional — improves category relevance)
+presets: []
+# presets:
+#   - node-express
+
+# Finding prioritization
+prioritization:
+  maxFindingsInComment: 5
+  failOnSeverity: high
+
+# Gamification
+gamification:
+  enabled: true
+
+# Output format — HTML recommended for OWASP reports
+output:
+  markdown: true
+  sarif: false
+  json: false
+  html: true         # Self-contained HTML with OWASP dashboard and evidence cards
+
+# ── OWASP Top 10 Configuration ──
+owasp:
+  enabled: true
+
+  # Categories to scan (A01 through A10)
+  # Remove categories to skip them, or use --categories CLI flag to override
+  categories:
+    - A01    # Broken Access Control
+    - A02    # Cryptographic Failures
+    - A03    # Injection
+    - A04    # Insecure Design
+    - A05    # Security Misconfiguration
+    - A06    # Vulnerable and Outdated Components
+    - A07    # Identification and Authentication Failures
+    - A08    # Software and Data Integrity Failures
+    - A09    # Security Logging and Monitoring Failures
+    - A10    # Server-Side Request Forgery (SSRF)
+
+  # Run category scans in parallel (faster but uses more resources)
+  parallel: false
+
+  # Minimum confidence level to include a finding
+  # Options: low, medium, high
+  # Higher gates reduce noise but may miss real issues
+  confidenceGate: low
+
+  # Require scanner evidence for each finding
+  # When true: only findings with code/HTTP/screenshot evidence are included
+  # When false: all findings are included regardless of evidence
+  evidenceGate: true
+
+  # Exit code 1 if any finding meets or exceeds this severity
+  # Options: info, low, medium, high, critical
+  failOnSeverity: high
+
+# ── Environment Configuration ──
+environment:
+  # Skip WSL availability check on Windows
+  # Set to true in CI or when you know WSL is not needed
+  skipWslCheck: false
+
+  # Scanner execution timeout in milliseconds (default: 120000 = 2 minutes)
+  scannerTimeout: 120000

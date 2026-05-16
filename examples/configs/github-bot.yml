@@ -1,0 +1,38 @@
+# .kodeaman.yml — GitHub Bot (Probot)
+#
+# Use this configuration in repositories connected to the KodeAman GitHub bot.
+# The bot reads this file on every PR event and runs the configured scan.
+#
+# See docs/github-bot-setup.md for bot installation and webhook setup.
+
+# Language for PR comments and coaching
+language: id
+
+# Scanner selection
+scanners:
+  semgrep: true          # SAST — runs in the bot's container
+  zapBaseline: false     # DAST — enable only if the bot has network access to the target
+  npmAudit: true         # Dependency vulnerability scan
+
+# Framework preset — helps the bot choose relevant scanner rules
+presets: []
+# presets:
+#   - node-express
+
+# Finding prioritization
+prioritization:
+  maxFindingsInComment: 3    # Top N findings shown in the PR comment
+  failOnSeverity: high       # Findings at or above this level trigger a failed check
+                              # Use "critical" for less strict enforcement
+
+# Gamification in PR comments
+gamification:
+  enabled: true
+
+# Output format
+# The bot always posts a Markdown comment. Additional formats are optional.
+output:
+  markdown: true     # PR comment (always used by bot)
+  sarif: false       # Upload SARIF to GitHub Code Scanning
+  json: false        # Attach JSON artifact
+  html: false        # Generate HTML report artifact
