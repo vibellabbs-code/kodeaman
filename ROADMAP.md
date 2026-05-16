@@ -20,7 +20,7 @@ This roadmap tracks product milestones and repository-organization work for Kode
 - [x] Add prioritizer v0
 - [x] Add 10 Bahasa coaching templates
 - [x] Add package-level documentation for core scan packages
-- [ ] Add demo project under `examples/demo-node-express`
+- [x] Add demo project under `examples/demo-node-express`
 
 ## Sprint 2 — PR Bot First Usable Version (Week 2)
 
@@ -63,9 +63,9 @@ This roadmap tracks product milestones and repository-organization work for Kode
 - [x] Keep root operational files at repository root: `package.json`, `pnpm-workspace.yaml`, `turbo.json`, `biome.json`, `tsconfig.base.json`, `docker-compose.yml`, and governance docs
 - [x] Keep GitHub issue templates, workflows, and CODEOWNERS under `.github/`
 - [x] Add README files beside important app and package folders so responsibilities are discoverable without opening implementation files
-- [ ] Add `docs/` guides for onboarding, deployment, CI usage, and bot setup
-- [ ] Add `examples/` demo repositories for Node/Express, Laravel, and WordPress pilot flows
-- [ ] Add `.kodeaman.yml` example configurations for local CLI, GitHub bot, GitLab bot, and OWASP mode
+- [x] Add `docs/` guides for onboarding, deployment, CI usage, and bot setup
+- [x] Add `examples/` demo repositories for Node/Express, Laravel, and WordPress pilot flows
+- [x] Add `.kodeaman.yml` example configurations for local CLI, GitHub bot, GitLab bot, and OWASP mode
 
 ## Future
 
