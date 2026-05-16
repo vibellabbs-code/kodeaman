@@ -50,7 +50,7 @@ This roadmap tracks product milestones for KodeAman. Each sprint represents roug
 - [x] Implement npm audit adapter for SCA (OWASP A06)
 - [x] Document OWASP evidence policy and scanner coverage expectations
 - [x] Write onboarding documentation for GitHub, GitLab, CLI, and self-hosting
-- [ ] Improve prioritizer with context flags (direct vs transitive dependency, fix availability)
+- [x] Improve prioritizer with context flags (direct vs transitive dependency, fix availability)
 - [ ] Add 10 more bilingual coaching templates
 - [ ] Run 15 developer interviews and collect pilot feedback
 
@@ -60,9 +60,24 @@ This roadmap tracks product milestones for KodeAman. Each sprint represents roug
 - [x] Fix npm-audit adapter interface mismatch (`repoRoot` vs `targetPath`)
 - [x] Enable config-less scanning with auto-detection of npm projects
 - [x] Validate adapter resilience when scanning projects without `.kodeaman.yml`
-- [ ] Add MCP server documentation to docs site
+- [x] Add MCP server documentation to docs site
 - [ ] Publish MCP server to npm registry
 - [ ] Test MCP integration with Cursor, Windsurf, and other AI coding assistants
+
+## Sprint 6 -- Plugin System, IDE Integration, and Gitea Support
+
+- [x] Build plugin system in `@kodeaman/core` with lifecycle hooks (`beforeScan`, `afterScan`, `onFinding`, `onError`)
+- [x] Add `PluginLoader` for dynamic plugin discovery and validation
+- [x] Build `@kodeaman/bot-gitea` with HMAC-SHA256 webhook verification and Forgejo compatibility
+- [x] Build `@kodeaman/vscode-extension` with inline diagnostics and scan command
+- [x] Add SARIF output documentation for VS Code and JetBrains integration
+- [x] Add `@kodeaman/telemetry` with JSONL file writer for scan validation output
+- [x] Add `@kodeaman/test-utils` with shared mock finding factories
+- [x] Add npm registry metadata to all packages for publishing readiness
+- [ ] Publish all packages to npm registry
+- [ ] Submit VS Code extension to Visual Studio Marketplace
+- [ ] End-to-end test Gitea bot with Forgejo instance
+- [ ] Add 10 more bilingual coaching templates
 
 ## Repository Organization
 
@@ -78,13 +93,8 @@ This roadmap tracks product milestones for KodeAman. Each sprint represents roug
 
 ## Future
 
-- SARIF output for IDE integration (VS Code, JetBrains)
-- VS Code extension with inline coaching
 - Advanced autofix patch generation
 - Team leaderboard and challenge quests
 - Lightweight analytics dashboard
-- Gitea and Forgejo support
 - Multi-language support beyond Bahasa Indonesia and English
 - Enterprise policy engine with custom rule authoring
-- npm registry publishing for all packages
-- Plugin system for community-contributed scanner adapters

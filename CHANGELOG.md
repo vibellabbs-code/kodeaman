@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-05-16
+
+### Added
+
+- `@kodeaman/bot-gitea` -- Gitea and Forgejo webhook bot with HMAC-SHA256 signature validation, PR comment management, and scan pipeline integration via Hono
+- `@kodeaman/telemetry` -- Scan telemetry collector and JSONL file writer for validation output, tracking scanner performance, finding counts, and timing data
+- `@kodeaman/test-utils` -- Shared test utilities with `createMockFinding()` and `createMockFindings()` helpers for consistent test fixtures across packages
+- `@kodeaman/vscode-extension` -- VS Code extension providing inline diagnostic overlays from KodeAman scan results, with severity mapping to VS Code diagnostic levels and one-click scan triggering
+- Plugin system in `@kodeaman/core` with `KodeamanPlugin`, `PluginHooks`, and `PluginLoader` for community-contributed scanner adapters, supporting `beforeScan`, `afterScan`, `onFinding`, and `onError` lifecycle hooks
+- `docs/mcp-integration.md` -- MCP server integration guide covering configuration for Claude Code, Cursor, Windsurf, and other AI coding assistants
+- `docs/sarif-ide-integration.md` -- SARIF output format documentation with VS Code, JetBrains, and GitHub Code Scanning integration instructions
+- `isDependencyDirect()` heuristic in `@kodeaman/prioritizer` -- detects direct dependencies in `dependencies`, `optionalDependencies`, and `peerDependencies` sections (+7 priority boost)
+- `hasFixAvailable()` heuristic in `@kodeaman/prioritizer` -- detects findings with available fix commands or autofix eligibility (+6 priority boost)
+- npm registry metadata (`publishConfig`, `repository`, `homepage`, `bugs`, `keywords`) across all 19 packages and 4 apps for npm publishing readiness
+
+### Changed
+
+- Prioritizer `computePriorityScore()` now factors in dependency directness and fix availability when scoring SCA findings
+- All package.json files updated with consistent registry metadata for public npm publishing
+
 ## [0.3.0] - 2026-05-16
 
 ### Added
