@@ -9,6 +9,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- `docs/getting-started.md` — CLI quickstart guide covering installation, `kodeaman init`, `kodeaman scan`, and `kodeaman owasp-scan` with full option tables, exit codes, and configuration reference
+- `docs/github-bot-setup.md` — GitHub App registration, environment configuration, `.kodeaman.yml` for PR reviews, Docker Compose deployment, and PR comment structure reference
+- `docs/gitlab-bot-setup.md` — GitLab access token setup, webhook configuration, `.kodeaman.yml` for MR reviews, deployment options, and self-hosted GitLab support
+- `docs/self-hosting/deployment.md` — Docker Compose architecture, environment variables, scanner availability, webhook routing (nginx, ngrok), and production checklist
+- `examples/demo-node-express/` — Vulnerable Express server demo with `.kodeaman.yml`, `package.json`, `server.js`, and README documenting expected findings (SQL injection, XSS, hardcoded secrets, missing headers)
+- `examples/demo-laravel/` — Vulnerable Laravel demo with `.kodeaman.yml`, `composer.json`, `routes/web.php`, and README documenting expected findings (raw SQL, CSRF bypass, debug mode leak, mass assignment)
+- `examples/demo-wordpress/` — Vulnerable WordPress plugin demo with `.kodeaman.yml`, `plugin.php`, and README documenting expected findings (SQL injection without `prepare()`, missing nonce, unescaped output, missing capability check)
+- `examples/configs/` — Four annotated `.kodeaman.yml` example configurations with inline comments explaining every option:
+  - `cli-local.yml` — local CLI development scanning
+  - `github-bot.yml` — GitHub PR bot (Probot)
+  - `gitlab-bot.yml` — GitLab MR bot (Hono)
+  - `owasp-mode.yml` — OWASP Top 10 structured scanning with full category, gate, and environment documentation
 - `ROADMAP.md` repository organization backlog — Updated roadmap status with implemented OWASP/npm-audit/HTML milestones, package/app documentation progress, and follow-up folders for `docs/`, `examples/`, and `.kodeaman.yml` examples
 - Package and app README files — Added local responsibility, source-of-truth, and verification notes beside each important `apps/*` and `packages/*` workspace folder
 - `AGENTS.md` next-step prompt template — Task-specific prompt pattern that anchors agents to the repository operating rules, scoped workflow requirements, examples for common change types, and the required Completion Summary format
