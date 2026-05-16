@@ -44,6 +44,19 @@ export function isPublicRoute(filePath: string, framework?: string): boolean {
   return publicPatterns.some((p) => p.test(filePath));
 }
 
+export function isDependencyDirect(finding: { surface?: string; category?: string; occurrences?: { target?: string }[] }): boolean {
+  if (finding.surface !== "dependency" && finding.category !== "sca") return false;
+
+  const dependencyScopes = ["dependencies", "optionalDependencies", "peerDependencies"];
+  return finding.occurrences?.some((occurrence) =>
+    occurrence.target ? dependencyScopes.includes(occurrence.target) : false,
+  ) ?? false;
+}
+
+export function hasFixAvailable(finding: { fixCommands?: unknown[]; coaching?: { autofixEligible?: boolean } }): boolean {
+  return Boolean(finding.fixCommands?.length || finding.coaching?.autofixEligible);
+}
+
 export function estimateFixEffort(category: string): "trivial" | "easy" | "moderate" | "hard" {
   const trivialFixes = ["misconfiguration", "config", "info-leak"];
   const easyFixes = ["xss", "csrf", "secrets"];

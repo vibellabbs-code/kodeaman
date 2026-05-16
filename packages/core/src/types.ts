@@ -9,6 +9,26 @@ export interface ScannerAdapter {
   scan(context: ScanContext): Promise<NormalizedFinding[]>;
 }
 
+export interface PluginConfig {
+  name: string;
+  enabled?: boolean;
+  package?: string;
+  options?: Record<string, unknown>;
+}
+
+export interface PluginHooks {
+  beforeScan?(context: ScanContext): Promise<void> | void;
+  afterScan?(result: ScanResult): Promise<ScanResult | void> | ScanResult | void;
+  onAdapterRegistered?(adapter: ScannerAdapter): Promise<void> | void;
+}
+
+export interface KodeamanPlugin {
+  name: string;
+  adapters?: ScannerAdapter[];
+  hooks?: PluginHooks;
+  configure?(config: PluginConfig): Promise<void> | void;
+}
+
 export interface ScanContext {
   repoRoot: string;
   branch?: string;
@@ -91,4 +111,5 @@ export interface KodeamanConfig {
   prioritization?: PrioritizationConfig;
   gamification?: GamificationConfig;
   output?: OutputConfig;
+  plugins?: PluginConfig[];
 }

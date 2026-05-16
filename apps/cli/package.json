@@ -7,7 +7,9 @@
   "bin": {
     "kodeaman": "./dist/index.js"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -38,5 +40,24 @@
     "typescript": "^5.6.0",
     "vitest": "^2.1.0",
     "@types/node": "^22.0.0"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vibellabbs-code/kodeaman.git",
+    "directory": "apps/cli"
+  },
+  "homepage": "https://github.com/vibellabbs-code/kodeaman#readme",
+  "bugs": {
+    "url": "https://github.com/vibellabbs-code/kodeaman/issues"
+  },
+  "keywords": [
+    "kodeaman",
+    "security",
+    "cli",
+    "command-line",
+    "scanner"
+  ]
 }

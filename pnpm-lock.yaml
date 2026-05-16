@@ -24,6 +24,43 @@ importers:
         specifier: ^3.0.0
         version: 3.2.4(@types/node@20.19.41)
 
+  apps/bot-gitea:
+    dependencies:
+      '@kodeaman/config':
+        specifier: workspace:*
+        version: link:../../packages/config
+      '@kodeaman/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@kodeaman/output-html':
+        specifier: workspace:*
+        version: link:../../packages/output-html
+      '@kodeaman/output-markdown':
+        specifier: workspace:*
+        version: link:../../packages/output-markdown
+      '@kodeaman/owasp':
+        specifier: workspace:*
+        version: link:../../packages/owasp
+      '@kodeaman/schema':
+        specifier: workspace:*
+        version: link:../../packages/schema
+      hono:
+        specifier: ^4.6.0
+        version: 4.12.18
+    devDependencies:
+      '@hono/node-server':
+        specifier: ^1.13.0
+        version: 1.19.14(hono@4.12.18)
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.19
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.0
+        version: 2.1.9(@types/node@22.19.19)
+
   apps/bot-github:
     dependencies:
       '@kodeaman/config':
@@ -155,6 +192,8 @@ importers:
       vitest:
         specifier: ^2.1.0
         version: 2.1.9(@types/node@22.19.19)
+
+  apps/docs-site: {}
 
   packages/adapters-npm-audit:
     dependencies:
@@ -458,6 +497,50 @@ importers:
       vitest:
         specifier: ^2.1.0
         version: 2.1.9(@types/node@22.19.19)
+
+  packages/telemetry:
+    dependencies:
+      '@kodeaman/core':
+        specifier: workspace:*
+        version: link:../core
+      '@kodeaman/schema':
+        specifier: workspace:*
+        version: link:../schema
+    devDependencies:
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.19
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.0
+        version: 2.1.9(@types/node@22.19.19)
+
+  packages/test-utils:
+    dependencies:
+      '@kodeaman/schema':
+        specifier: workspace:*
+        version: link:../schema
+    devDependencies:
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.0
+        version: 2.1.9(@types/node@22.19.19)
+
+  packages/vscode-extension:
+    devDependencies:
+      '@types/node':
+        specifier: ^20.0.0
+        version: 20.19.41
+      '@types/vscode':
+        specifier: ^1.90.0
+        version: 1.120.0
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
 
 packages:
 
@@ -1266,6 +1349,9 @@ packages:
 
   '@types/tedious@4.0.14':
     resolution: {integrity: sha512-KHPsfX/FoVbUGbyYvk1q9MMQHLPeRZhRJZdO45Q4YjvFkv4hMNghCWTvy7rdKessBsmtz4euWCWAB6/tVpI1Iw==}
+
+  '@types/vscode@1.120.0':
+    resolution: {integrity: sha512-feaT4Rst+FkTch5zz/ZbNCxoIvo55YU80Be2kiL7OJcod4+CUYf2lUBPdIJzozNnSEMq1VRTGrWEcCGFB3fBmA==}
 
   '@vitest/expect@2.1.9':
     resolution: {integrity: sha512-UJCIkTBenHeKT1TTlKMJWy1laZewsRIzYighyYiJKZreqtdxSos/S1t+ktRMQWu2CKqaarrkeszJx1cgC5tGZw==}
@@ -3143,6 +3229,8 @@ snapshots:
   '@types/tedious@4.0.14':
     dependencies:
       '@types/node': 22.19.19
+
+  '@types/vscode@1.120.0': {}
 
   '@vitest/expect@2.1.9':
     dependencies:

@@ -1,4 +1,5 @@
 export { ScanPipeline } from "./pipeline.js";
+export { PluginLoader } from "./plugin-loader.js";
 export { deduplicateFindings } from "./dedup.js";
 export {
   SCANNER_OWASP_COVERAGE,
@@ -14,6 +15,9 @@ export type {
   ScannerCoverage,
   CoverageReport,
   KodeamanConfig,
+  KodeamanPlugin,
+  PluginConfig,
+  PluginHooks,
   PrioritizationConfig,
   GamificationConfig,
   OutputConfig,

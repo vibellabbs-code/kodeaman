@@ -1,0 +1,51 @@
+{
+  "name": "@kodeaman/bot-gitea",
+  "version": "0.1.0",
+  "description": "Gitea and Forgejo webhook bot for KodeAman security coach",
+  "license": "Apache-2.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "hono": "^4.6.0",
+    "@kodeaman/core": "workspace:*",
+    "@kodeaman/config": "workspace:*",
+    "@kodeaman/owasp": "workspace:*",
+    "@kodeaman/output-markdown": "workspace:*",
+    "@kodeaman/output-html": "workspace:*",
+    "@kodeaman/schema": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0",
+    "@types/node": "^22.0.0",
+    "@hono/node-server": "^1.13.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vibellabbs-code/kodeaman.git",
+    "directory": "apps/bot-gitea"
+  },
+  "homepage": "https://github.com/vibellabbs-code/kodeaman#readme",
+  "bugs": {
+    "url": "https://github.com/vibellabbs-code/kodeaman/issues"
+  },
+  "keywords": [
+    "kodeaman",
+    "security"
+  ]
+}

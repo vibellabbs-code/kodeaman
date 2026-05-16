@@ -1,0 +1,64 @@
+{
+  "name": "kodeaman-vscode-extension",
+  "displayName": "KodeAman",
+  "description": "Run KodeAman security scans and view findings as VS Code diagnostics.",
+  "version": "0.1.0",
+  "publisher": "kodeaman",
+  "license": "Apache-2.0",
+  "private": true,
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Linters",
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:kodeaman.scanWorkspace",
+    "onCommand:kodeaman.clearDiagnostics"
+  ],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "kodeaman.scanWorkspace",
+        "title": "KodeAman: Scan Workspace"
+      },
+      {
+        "command": "kodeaman.clearDiagnostics",
+        "title": "KodeAman: Clear Diagnostics"
+      }
+    ],
+    "configuration": {
+      "title": "KodeAman",
+      "properties": {
+        "kodeaman.cliPath": {
+          "type": "string",
+          "default": "kodeaman",
+          "description": "Path to the KodeAman CLI executable."
+        },
+        "kodeaman.scanFormat": {
+          "type": "string",
+          "enum": ["json"],
+          "default": "json",
+          "description": "Output format requested from the KodeAman CLI. The extension currently expects JSON."
+        },
+        "kodeaman.maxBuffer": {
+          "type": "number",
+          "default": 10485760,
+          "description": "Maximum stdout buffer in bytes for KodeAman scan output."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "typecheck": "tsc --noEmit -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.90.0",
+    "typescript": "^5.6.0"
+  }
+}

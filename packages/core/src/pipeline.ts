@@ -11,6 +11,7 @@ import type {
   TimingInfo,
   KodeamanConfig,
   ScannerCoverage,
+  KodeamanPlugin,
 } from "./types.js";
 import { deduplicateFindings } from "./dedup.js";
 import { buildCoverageReport } from "./coverage.js";
@@ -64,6 +65,7 @@ function buildSummary(findings: NormalizedFinding[]): ScanSummary {
 
 export class ScanPipeline {
   private adapters: ScannerAdapter[] = [];
+  private plugins: KodeamanPlugin[] = [];
   private config: KodeamanConfig;
 
   constructor(config: KodeamanConfig = {}) {
@@ -72,9 +74,25 @@ export class ScanPipeline {
 
   registerAdapter(adapter: ScannerAdapter): void {
     this.adapters.push(adapter);
+
+    for (const plugin of this.plugins) {
+      void plugin.hooks?.onAdapterRegistered?.(adapter);
+    }
+  }
+
+  registerPlugin(plugin: KodeamanPlugin): void {
+    this.plugins.push(plugin);
+
+    for (const adapter of plugin.adapters ?? []) {
+      this.registerAdapter(adapter);
+    }
   }
 
   async run(context: ScanContext): Promise<ScanResult> {
+    for (const plugin of this.plugins) {
+      await plugin.hooks?.beforeScan?.(context);
+    }
+
     const startedAt = new Date().toISOString();
     const adapterTimings: Record<string, number> = {};
 
@@ -146,11 +164,20 @@ export class ScanPipeline {
       adapterTimings,
     };
 
-    return {
+    let result: ScanResult = {
       findings: sorted,
       summary,
       timing,
       coverageReport,
     };
+
+    for (const plugin of this.plugins) {
+      const nextResult = await plugin.hooks?.afterScan?.(result);
+      if (nextResult) {
+        result = nextResult;
+      }
+    }
+
+    return result;
   }
 }

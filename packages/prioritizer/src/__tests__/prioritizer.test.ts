@@ -6,6 +6,8 @@ import {
   estimateFixEffort,
   detectSensitiveData,
   isInternetExposed,
+  isDependencyDirect,
+  hasFixAvailable,
 } from "../heuristics.js";
 import type { NormalizedFinding, RepoContext } from "@kodeaman/schema";
 
@@ -180,6 +182,57 @@ describe("Prioritizer", () => {
       );
     });
 
+    it("should boost score for direct dependencies", () => {
+      const directDependency = makeFinding({
+        findingId: "direct",
+        category: "sca",
+        surface: "dependency",
+        occurrences: [{ filePath: "package.json", target: "dependencies" }],
+      });
+      const transitiveDependency = makeFinding({
+        findingId: "transitive",
+        category: "sca",
+        surface: "dependency",
+        occurrences: [{ filePath: "package-lock.json", target: "transitive" }],
+      });
+
+      const result = prioritizer.prioritize([transitiveDependency, directDependency]);
+
+      const direct = result.find((f) => f.findingId === "direct")!;
+      const transitive = result.find((f) => f.findingId === "transitive")!;
+
+      expect(direct.prioritization.priorityScore).toBeGreaterThan(
+        transitive.prioritization.priorityScore,
+      );
+      expect(direct.prioritization.reasons).toContain("Direct dependency: +7");
+    });
+
+    it("should boost score for findings with available fixes", () => {
+      const fixableFinding = makeFinding({
+        findingId: "fixable",
+        fixCommands: [
+          {
+            command: "pnpm audit --fix",
+            description: "Apply available fixes",
+            descriptionId: "Terapkan perbaikan yang tersedia",
+            isBreaking: false,
+            packageManager: "pnpm",
+          },
+        ],
+      });
+      const manualFinding = makeFinding({ findingId: "manual" });
+
+      const result = prioritizer.prioritize([manualFinding, fixableFinding]);
+
+      const fixable = result.find((f) => f.findingId === "fixable")!;
+      const manual = result.find((f) => f.findingId === "manual")!;
+
+      expect(fixable.prioritization.priorityScore).toBeGreaterThan(
+        manual.prioritization.priorityScore,
+      );
+      expect(fixable.prioritization.reasons).toContain("Fix available: +6");
+    });
+
     it("should provide reasons for score adjustments", () => {
       const finding = makeFinding({
         location: {
@@ -327,6 +380,43 @@ describe("heuristics", () => {
 
     it("should not flag util files", () => {
       expect(isInternetExposed("src/utils/helpers.ts")).toBe(false);
+    });
+  });
+
+  describe("isDependencyDirect", () => {
+    it("should flag dependency findings in manifest dependency sections", () => {
+      expect(
+        isDependencyDirect({
+          category: "sca",
+          surface: "dependency",
+          occurrences: [{ target: "dependencies" }],
+        }),
+      ).toBe(true);
+    });
+
+    it("should not flag transitive or non-dependency findings", () => {
+      expect(
+        isDependencyDirect({
+          category: "sca",
+          surface: "dependency",
+          occurrences: [{ target: "transitive" }],
+        }),
+      ).toBe(false);
+      expect(isDependencyDirect({ category: "sast", surface: "source-code" })).toBe(false);
+    });
+  });
+
+  describe("hasFixAvailable", () => {
+    it("should detect command-based fixes", () => {
+      expect(hasFixAvailable({ fixCommands: [{}] })).toBe(true);
+    });
+
+    it("should detect coaching autofix eligibility", () => {
+      expect(hasFixAvailable({ coaching: { autofixEligible: true } })).toBe(true);
+    });
+
+    it("should not flag findings without fix paths", () => {
+      expect(hasFixAvailable({})).toBe(false);
     });
   });
 });

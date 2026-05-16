@@ -9,6 +9,8 @@ import {
   estimateFixEffort,
   detectSensitiveData,
   isInternetExposed,
+  isDependencyDirect,
+  hasFixAvailable,
 } from "./heuristics.js";
 
 const SEVERITY_BASE_SCORE: Record<SeverityLevel, number> = {
@@ -94,6 +96,20 @@ export class Prioritizer {
       const sensitivityBoost = 10;
       score += sensitivityBoost;
       reasons.push(`Sensitive data in context: +${sensitivityBoost}`);
+    }
+
+    // Dependency reachability boost
+    if (isDependencyDirect(finding)) {
+      const directDependencyBoost = 7;
+      score += directDependencyBoost;
+      reasons.push(`Direct dependency: +${directDependencyBoost}`);
+    }
+
+    // Available fix boost
+    if (hasFixAvailable(finding)) {
+      const fixAvailableBoost = 6;
+      score += fixAvailableBoost;
+      reasons.push(`Fix available: +${fixAvailableBoost}`);
     }
 
     // Developer burden — easy fixes get a boost

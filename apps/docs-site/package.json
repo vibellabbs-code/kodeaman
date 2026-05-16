@@ -1,0 +1,33 @@
+{
+  "name": "@kodeaman/docs-site",
+  "version": "0.1.0",
+  "description": "Documentation site for KodeAman security coach",
+  "license": "Apache-2.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "echo \"docs-site build not configured\"",
+    "dev": "echo \"docs-site dev not configured\"",
+    "typecheck": "echo \"docs-site typecheck not configured\"",
+    "test": "echo \"docs-site tests not configured\""
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vibellabbs-code/kodeaman.git",
+    "directory": "apps/docs-site"
+  },
+  "homepage": "https://github.com/vibellabbs-code/kodeaman#readme",
+  "bugs": {
+    "url": "https://github.com/vibellabbs-code/kodeaman/issues"
+  },
+  "keywords": [
+    "kodeaman",
+    "security",
+    "documentation",
+    "docs",
+    "site"
+  ]
+}

@@ -14,6 +14,13 @@ export interface EnvironmentConfig {
   scannerTimeout: number;
 }
 
+export interface PluginConfig {
+  name: string;
+  enabled?: boolean;
+  package?: string;
+  options?: Record<string, unknown>;
+}
+
 export interface KodeamanConfig {
   language: "en" | "id";
   scanners: {
@@ -46,4 +53,5 @@ export interface KodeamanConfig {
     provider?: string;
     apiKey?: string;
   };
+  plugins?: PluginConfig[];
 }

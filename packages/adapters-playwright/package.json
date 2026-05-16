@@ -12,7 +12,9 @@
   },
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
@@ -28,10 +30,31 @@
     "playwright": "^1.49.0"
   },
   "peerDependenciesMeta": {
-    "playwright": { "optional": true }
+    "playwright": {
+      "optional": true
+    }
   },
   "devDependencies": {
     "typescript": "^5.6.0",
     "vitest": "^2.1.0"
-  }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vibellabbs-code/kodeaman.git",
+    "directory": "packages/adapters-playwright"
+  },
+  "homepage": "https://github.com/vibellabbs-code/kodeaman#readme",
+  "bugs": {
+    "url": "https://github.com/vibellabbs-code/kodeaman/issues"
+  },
+  "keywords": [
+    "kodeaman",
+    "security",
+    "playwright",
+    "dast",
+    "browser"
+  ]
 }
