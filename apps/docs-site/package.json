@@ -1,33 +1,12 @@
 {
   "name": "@aspidasec/docs-site",
-  "version": "0.1.0",
-  "description": "Documentation site for AspidaSec security coach",
-  "license": "Apache-2.0",
-  "type": "module",
   "private": true,
+  "version": "0.1.0",
+  "type": "module",
   "scripts": {
-    "build": "echo \"docs-site build not configured\"",
-    "dev": "echo \"docs-site dev not configured\"",
-    "typecheck": "echo \"docs-site typecheck not configured\"",
-    "test": "echo \"docs-site tests not configured\""
-  },
-  "publishConfig": {
-    "access": "public"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/vibellabbs-code/aspidasec.git",
-    "directory": "apps/docs-site"
-  },
-  "homepage": "https://github.com/vibellabbs-code/aspidasec#readme",
-  "bugs": {
-    "url": "https://github.com/vibellabbs-code/aspidasec/issues"
-  },
-  "keywords": [
-    "aspidasec",
-    "security",
-    "documentation",
-    "docs",
-    "site"
-  ]
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit"
+  }
 }
