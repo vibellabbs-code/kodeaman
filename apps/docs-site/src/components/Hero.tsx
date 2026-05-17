@@ -36,7 +36,7 @@ export function Hero() {
           <div className="absolute -inset-4 rounded-[2rem] bg-teal-500/20 blur-3xl" />
           <div className="relative overflow-hidden rounded-[2rem] border border-zinc-800 bg-zinc-900 shadow-2xl shadow-black/60">
             <ParallaxImage
-              src="/nano-banana-v1-bioluminescent-jungle.jpg"
+              src={`${import.meta.env.BASE_URL}nano-banana-v1-bioluminescent-jungle.jpg`}
               alt="Bioluminescent jungle concept art representing AspidaSec security guidance"
               className="aspect-[4/5] w-full object-cover opacity-90"
             />
