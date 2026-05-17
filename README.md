@@ -12,6 +12,8 @@
 
 Open-core security coach for Indonesian developers. Scans your code, prioritizes findings by real-world risk, and teaches developers how to fix issues — in **Bahasa Indonesia** or English — with contextual explanations, fix suggestions, and micro-lessons.
 
+![Nano Banana Civilization](assets/concept-art/nano-banana-v1-bioluminescent-jungle.jpg)
+
 ![KodeAman demo](docs/demo.gif)
 
 > *"Kode Aman" (Bahasa Indonesia) = "Secure Code"*
