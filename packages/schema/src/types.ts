@@ -4,6 +4,10 @@ export type FindingSource =
   | "zap-full"
   | "codeql"
   | "npm-audit"
+  | "bandit"
+  | "gosec"
+  | "cargo-audit"
+  | "spotbugs"
   | "playwright"
   | "custom";
 
@@ -221,6 +225,7 @@ export interface OwaspScanPhaseResult {
 export interface OwaspScanReport {
   schemaVersion: "1.0.0";
   phases: OwaspScanPhaseResult[];
+  scannedCategories: string[];
   totalFindings: number;
   totalFiltered: number;
   scanDurationMs: number;

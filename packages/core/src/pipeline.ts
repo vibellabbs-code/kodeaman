@@ -3,6 +3,7 @@ import type {
   SeverityLevel,
   FindingCategory,
 } from "@kodeaman/schema";
+import { Prioritizer } from "@kodeaman/prioritizer";
 import type {
   ScannerAdapter,
   ScanContext,
@@ -15,14 +16,6 @@ import type {
 } from "./types.js";
 import { deduplicateFindings } from "./dedup.js";
 import { buildCoverageReport } from "./coverage.js";
-
-const SEVERITY_ORDER: SeverityLevel[] = [
-  "critical",
-  "high",
-  "medium",
-  "low",
-  "info",
-];
 
 function emptySeverityCounts(): Record<SeverityLevel, number> {
   return { info: 0, low: 0, medium: 0, high: 0, critical: 0 };
@@ -144,17 +137,16 @@ export class ScanPipeline {
     // Step 2: Deduplicate
     const deduplicated = deduplicateFindings(allFindings);
 
-    // Step 3: Sort by priority score (descending)
-    const sorted = deduplicated.sort(
-      (a, b) =>
-        b.prioritization.priorityScore - a.prioritization.priorityScore ||
-        SEVERITY_ORDER.indexOf(a.severity) -
-          SEVERITY_ORDER.indexOf(b.severity)
+    // Step 3: Compute priority scores and sort findings
+    const prioritizer = new Prioritizer();
+    const prioritized = prioritizer.prioritize(
+      deduplicated,
+      context.repoContext
     );
 
     // Step 4: Build summary and coverage
-    const summary = buildSummary(sorted);
-    const coverageReport = buildCoverageReport(scannerCoverage, sorted);
+    const summary = buildSummary(prioritized);
+    const coverageReport = buildCoverageReport(scannerCoverage, prioritized);
 
     const completedAt = new Date().toISOString();
     const timing: TimingInfo = {
@@ -165,7 +157,7 @@ export class ScanPipeline {
     };
 
     let result: ScanResult = {
-      findings: sorted,
+      findings: prioritized,
       summary,
       timing,
       coverageReport,

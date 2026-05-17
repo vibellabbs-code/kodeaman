@@ -35,6 +35,7 @@ function normalizeScannerName(name: string): string {
 export function buildCoverageReport(
   scannerCoverage: ScannerCoverage[],
   findings: NormalizedFinding[],
+  owaspOptions?: { scanMode: "owasp"; scannedCategories: string[] },
 ): CoverageReport {
   const configured = scannerCoverage.map((scanner) => scanner.scannerName);
   const ran = scannerCoverage
@@ -48,6 +49,9 @@ export function buildCoverageReport(
     }));
 
   const ranSet = new Set(ran.map(normalizeScannerName));
+  const owaspScannedCategorySet = new Set(
+    owaspOptions?.scannedCategories.map((category) => category.toUpperCase()) ?? [],
+  );
   const findingsByScanner = new Map<string, number>();
   for (const finding of findings) {
     const scanner = normalizeScannerName(finding.source || String(finding.raw?.tool ?? ""));
@@ -66,7 +70,7 @@ export function buildCoverageReport(
     return {
       categoryId,
       categoryName,
-      covered: coveredBy.length > 0,
+      covered: coveredBy.length > 0 || owaspScannedCategorySet.has(categoryId),
       coveredBy,
       findingsCount,
     };
@@ -92,6 +96,12 @@ export function buildCoverageReport(
     scannersConfigured: configured,
     scannersRan: ran,
     scannersSkipped: skipped,
+    ...(owaspOptions
+      ? {
+          scanMode: owaspOptions.scanMode,
+          owaspScannedCategories: owaspOptions.scannedCategories,
+        }
+      : {}),
     owaspCoverage,
     overallCoveragePercent,
     scanSurfaces,

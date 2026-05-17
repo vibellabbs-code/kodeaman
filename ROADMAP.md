@@ -79,6 +79,25 @@ This roadmap tracks product milestones for KodeAman. Each sprint represents roug
 - [ ] End-to-end test Gitea bot with Forgejo instance
 - [ ] Add 10 more bilingual coaching templates
 
+## Sprint 7 -- Bug Fixes, Multi-Language Adapters, and Pipeline Hardening
+
+- [x] Fix priority scores always 0 by integrating `Prioritizer` into `ScanPipeline.run()`
+- [x] Fix OWASP orchestrator duplicating findings across categories (run pipeline once, distribute findings)
+- [x] Fix npm-audit PostCSS remediation text confusing vulnerable package with fix package
+- [x] Fix coverage report showing 10% instead of 100% during OWASP scans
+- [x] Add `@kodeaman/adapters-bandit` for Python SAST via Bandit
+- [x] Add `@kodeaman/adapters-gosec` for Go SAST via gosec
+- [x] Add `@kodeaman/adapters-cargo-audit` for Rust SCA via cargo-audit
+- [x] Add `@kodeaman/adapters-spotbugs` for Java SAST via SpotBugs
+- [x] Add `repoContext` to `ScanContext` for prioritizer heuristics
+- [x] Add `scannedCategories` to `OwaspScanReport` for accurate coverage tracking
+- [x] Add `@kodeaman/watcher` with `kodeaman watch` CLI command for real-time file monitoring
+- [x] Add `@kodeaman/autofix` with `kodeaman autofix` CLI command for automated fix execution
+- [x] Add `@kodeaman/custom-rules` with `kodeaman rules` CLI command for user-defined security rules
+- [x] Add `@kodeaman/dashboard` with `kodeaman dashboard` CLI command for web-based trend tracking
+- [x] Add `@kodeaman/history` with `kodeaman history` CLI command for scan history and team collaboration
+- [ ] Add 10 more bilingual coaching templates
+
 ## Repository Organization
 
 - [x] Source code lives in `apps/*/src` and `packages/*/src`
@@ -93,8 +112,10 @@ This roadmap tracks product milestones for KodeAman. Each sprint represents roug
 
 ## Future
 
-- Advanced autofix patch generation
+- Advanced autofix with AST-based patch generation
 - Team leaderboard and challenge quests
-- Lightweight analytics dashboard
+- Multi-project aggregated analytics dashboard
 - Multi-language support beyond Bahasa Indonesia and English
-- Enterprise policy engine with custom rule authoring
+- Enterprise policy engine with role-based access control
+- CI/CD integration with GitHub Actions and GitLab CI templates
+- Webhook notifications for scan results (Slack, Discord, Teams)

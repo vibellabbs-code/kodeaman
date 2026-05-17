@@ -24,6 +24,7 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@kodeaman/prioritizer": "workspace:*",
     "@kodeaman/schema": "workspace:*"
   },
   "devDependencies": {

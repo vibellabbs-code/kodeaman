@@ -12,12 +12,12 @@ import type {
   OwaspScanReport,
   FindingSource,
 } from "@kodeaman/schema";
-import type { ScanContext, ScanResult } from "@kodeaman/core";
+import type { ScanContext } from "@kodeaman/core";
 import { ScanPipeline } from "@kodeaman/core";
 import type { KodeamanConfig } from "@kodeaman/config";
 import { OWASP_CATEGORIES, OWASP_BY_CODE } from "./categories.js";
 import type { OwaspCategoryDefinition } from "./types.js";
-import { mapFindingToOwasp } from "./mapper.js";
+import { mapCweToOwasp } from "./mapper.js";
 import { detectEnvironment } from "./environment.js";
 
 const CONFIDENCE_ORDER: ConfidenceLevel[] = ["low", "medium", "high"];
@@ -72,15 +72,16 @@ export class OwaspScanOrchestrator {
       requestedCodeSet.has(category.code),
     );
 
+    const scanResult = await this.pipeline.run(context);
     let phases: OwaspScanPhaseResult[];
 
     if (options.parallel) {
       phases = await this.runParallel(
-        context, categories, confidenceGate, evidenceGate, options
+        scanResult.findings, categories, confidenceGate, evidenceGate, options
       );
     } else {
       phases = await this.runSequential(
-        context, categories, confidenceGate, evidenceGate, options
+        scanResult.findings, categories, confidenceGate, evidenceGate, options
       );
     }
 
@@ -108,6 +109,7 @@ export class OwaspScanOrchestrator {
     return {
       schemaVersion: "1.0.0",
       phases,
+      scannedCategories: [...requestedCodeSet],
       totalFindings,
       totalFiltered,
       scanDurationMs: Date.now() - startedAt,
@@ -129,17 +131,18 @@ export class OwaspScanOrchestrator {
   }
 
   private async runSequential(
-    context: ScanContext,
+    allFindings: NormalizedFinding[],
     categories: OwaspCategoryDefinition[],
     confidenceGate: ConfidenceLevel,
     evidenceGate: boolean,
     options: OwaspScanOptions
   ): Promise<OwaspScanPhaseResult[]> {
     const phases: OwaspScanPhaseResult[] = [];
+    const assignedIds = new Set<string>();
 
     for (const cat of categories) {
-      const phase = await this.scanCategory(
-        context, cat, confidenceGate, evidenceGate, options
+      const phase = this.buildCategoryPhase(
+        allFindings, cat, assignedIds, confidenceGate, evidenceGate, options
       );
       phases.push(phase);
     }
@@ -148,46 +151,42 @@ export class OwaspScanOrchestrator {
   }
 
   private async runParallel(
-    context: ScanContext,
+    allFindings: NormalizedFinding[],
     categories: OwaspCategoryDefinition[],
     confidenceGate: ConfidenceLevel,
     evidenceGate: boolean,
     options: OwaspScanOptions
   ): Promise<OwaspScanPhaseResult[]> {
+    const assignedIds = new Set<string>();
     const promises = categories.map((cat) =>
-      this.scanCategory(context, cat, confidenceGate, evidenceGate, options)
+      this.buildCategoryPhase(
+        allFindings, cat, assignedIds, confidenceGate, evidenceGate, options
+      )
     );
     return Promise.all(promises);
   }
 
-  private async scanCategory(
-    context: ScanContext,
+  private buildCategoryPhase(
+    allFindings: NormalizedFinding[],
     category: OwaspCategoryDefinition,
+    assignedIds: Set<string>,
     confidenceGate: ConfidenceLevel,
     evidenceGate: boolean,
     options: OwaspScanOptions
-  ): Promise<OwaspScanPhaseResult> {
+  ): OwaspScanPhaseResult {
     const locale = options.locale ?? this.config.language ?? "en";
     const categoryName = locale === "id" ? category.titleId : category.titleEn;
 
     options.onPhaseStart?.(category.code, categoryName);
 
     const phaseStart = Date.now();
-    const scanResult: ScanResult = await this.pipeline.run(context);
 
-    // Filter findings to those matching this OWASP category
-    const cweSet = new Set(category.cweIds);
-    let findings = scanResult.findings.filter((f) => {
-      // Check if mapper maps finding to this category
-      const mappedCategories = mapFindingToOwasp(f);
-      if (mappedCategories.includes(category.id)) return true;
+    // Filter findings to those matching this OWASP category, assigning each once.
+    let findings = allFindings.filter((f) => {
+      if (assignedIds.has(f.findingId)) return false;
+      if (f.owaspCategory) return f.owaspCategory === category.id;
 
-      // Also check direct CWE match against category's CWE list
-      const cwes = f.classification.cwe ?? [];
-      return cwes.some((cweStr) => {
-        const match = cweStr.match(/(\d+)/);
-        return match ? cweSet.has(Number.parseInt(match[1], 10)) : false;
-      });
+      return this.getFirstMappedCategory(f) === category.id;
     });
 
     // Apply confidence gate
@@ -201,6 +200,10 @@ export class OwaspScanOrchestrator {
       const beforeEvidence = findings.length;
       findings = this.applyEvidenceGate(findings);
       filteredCount += beforeEvidence - findings.length;
+    }
+
+    for (const finding of findings) {
+      assignedIds.add(finding.findingId);
     }
 
     // Tag findings with their OWASP category
@@ -229,6 +232,23 @@ export class OwaspScanOrchestrator {
       confidenceGate: filteredCount > 0 ? "filtered" : "passed",
       filteredCount,
     };
+  }
+
+  private getFirstMappedCategory(finding: NormalizedFinding): string | undefined {
+    const classifiedCategories = finding.classification.owaspCategories ?? [];
+    const classifiedCategory = OWASP_CATEGORIES.find((category) =>
+      classifiedCategories.includes(category.id)
+    );
+    if (classifiedCategory) return classifiedCategory.id;
+
+    const cweCategoryIds = new Set(
+      (finding.classification.cwe ?? []).flatMap((cweStr) => {
+        const match = cweStr.match(/(\d+)/);
+        return match ? mapCweToOwasp(Number.parseInt(match[1], 10)) : [];
+      })
+    );
+
+    return OWASP_CATEGORIES.find((category) => cweCategoryIds.has(category.id))?.id;
   }
 
   private applyConfidenceGate(

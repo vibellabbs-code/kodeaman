@@ -2,6 +2,7 @@ import type {
   NormalizedFinding,
   SeverityLevel,
   FindingCategory,
+  RepoContext,
 } from "@kodeaman/schema";
 
 export interface ScannerAdapter {
@@ -38,6 +39,7 @@ export interface ScanContext {
   provider?: "github" | "gitlab" | "local";
   configPath?: string;
   owaspCategory?: string;
+  repoContext?: RepoContext;
 }
 
 export interface ScanSummary {
@@ -68,6 +70,8 @@ export interface CoverageReport {
   scannersConfigured: string[];
   scannersRan: string[];
   scannersSkipped: { name: string; reason: string }[];
+  scanMode?: "standard" | "owasp";
+  owaspScannedCategories?: string[];
   owaspCoverage: {
     categoryId: string;
     categoryName: string;

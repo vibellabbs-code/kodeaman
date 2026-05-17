@@ -1,0 +1,54 @@
+{
+  "name": "@kodeaman/history",
+  "version": "0.1.0",
+  "description": "Scan history storage and team collaboration infrastructure for KodeAman",
+  "license": "Apache-2.0",
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@kodeaman/config": "workspace:*",
+    "@kodeaman/schema": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/vibellabbs-code/kodeaman.git",
+    "directory": "packages/history"
+  },
+  "homepage": "https://github.com/vibellabbs-code/kodeaman#readme",
+  "bugs": {
+    "url": "https://github.com/vibellabbs-code/kodeaman/issues"
+  },
+  "keywords": [
+    "kodeaman",
+    "security",
+    "history",
+    "trends",
+    "team"
+  ]
+}

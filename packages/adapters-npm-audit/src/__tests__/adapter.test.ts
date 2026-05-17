@@ -153,6 +153,49 @@ describe("NpmAuditAdapter", () => {
         isBreaking: true,
       });
     });
+
+    it("should describe transitive fixes using vulnerable and parent package names", () => {
+      const auditResult: NpmAuditResult = {
+        auditReportVersion: 2,
+        vulnerabilities: {
+          postcss: {
+            name: "postcss",
+            severity: "moderate",
+            isDirect: false,
+            via: [{
+              source: 1,
+              name: "postcss",
+              dependency: "postcss",
+              title: "PostCSS line return parsing error",
+              url: "https://example.com/postcss",
+              severity: "moderate",
+              cwe: [],
+              cvss: { score: 5.0 },
+              range: "<8.4.31",
+            }],
+            effects: ["next"],
+            range: "<8.4.31",
+            nodes: ["node_modules/postcss"],
+            fixAvailable: {
+              name: "next",
+              version: "16.2.6",
+              isSemVerMajor: true,
+            },
+          },
+        },
+        metadata: {
+          vulnerabilities: { info: 0, low: 0, moderate: 1, high: 0, critical: 0, total: 1 },
+          dependencies: { prod: 1, dev: 0, optional: 0, peer: 0, peerOptional: 0, total: 1 },
+        },
+      };
+
+      const [finding] = adapter.parseAuditOutput(auditResult);
+
+      expect(finding.coaching.remediationEn[0]).toBe("Update postcss by upgrading its parent dependency next to version 16.2.6");
+      expect(finding.coaching.remediationId[0]).toBe("Perbarui postcss dengan meng-upgrade dependensi induknya next ke versi 16.2.6");
+      expect(finding.fixCommands?.[0].description).toBe("Fix postcss vulnerability by upgrading next to 16.2.6; review breaking changes");
+      expect(finding.fixCommands?.[0].descriptionId).toBe("Perbaiki kerentanan postcss dengan meng-upgrade next ke 16.2.6; tinjau breaking change");
+    });
   });
 });
 

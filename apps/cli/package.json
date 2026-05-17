@@ -21,6 +21,7 @@
   "dependencies": {
     "@kodeaman/config": "workspace:*",
     "@kodeaman/core": "workspace:*",
+    "@kodeaman/history": "workspace:*",
     "@kodeaman/schema": "workspace:*",
     "@kodeaman/adapters-semgrep": "workspace:*",
     "@kodeaman/adapters-zap": "workspace:*",
@@ -34,6 +35,10 @@
     "@kodeaman/output-html": "workspace:*",
     "@kodeaman/output-sarif": "workspace:*",
     "@kodeaman/presets": "workspace:*",
+    "@kodeaman/watcher": "workspace:*",
+    "@kodeaman/autofix": "workspace:*",
+    "@kodeaman/custom-rules": "workspace:*",
+    "@kodeaman/dashboard": "workspace:*",
     "commander": "^12.1.0"
   },
   "devDependencies": {

@@ -442,6 +442,7 @@ export function createOwaspScanCommand(): Command {
             ...(config.scanners.npmAudit ? [{ scannerName: "npm-audit", status: "ran" as const, findingsCount: 0, durationMs: 0 }] : [{ scannerName: "npm-audit", status: "skipped-disabled" as const, reason: "Disabled in configuration", findingsCount: 0, durationMs: 0 }]),
           ],
           allFindings,
+          { scanMode: "owasp", scannedCategories: scanResult.scannedCategories },
         );
         const { CLIRenderer } = await import("@kodeaman/output-markdown");
         console.log(new CLIRenderer().renderCoverageReport(coverageReport, locale));

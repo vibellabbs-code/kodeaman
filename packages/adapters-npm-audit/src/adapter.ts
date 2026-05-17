@@ -147,12 +147,15 @@ export class NpmAuditAdapter implements ScannerAdapter {
     }
 
     const isBreaking = vuln.fixAvailable.isSemVerMajor;
+    const fixPackageName = vuln.fixAvailable.name;
+    const fixVersion = vuln.fixAvailable.version;
+    const isDirectPackageFix = packageName === fixPackageName;
     const command = packageManager === "pnpm"
       ? isBreaking
-        ? `pnpm update ${vuln.fixAvailable.name}@${vuln.fixAvailable.version}`
+        ? `pnpm update ${fixPackageName}@${fixVersion}`
         : "pnpm audit --fix"
       : isBreaking
-        ? `npm install ${vuln.fixAvailable.name}@${vuln.fixAvailable.version}`
+        ? `npm install ${fixPackageName}@${fixVersion}`
         : "npm audit fix";
 
     return [
@@ -160,10 +163,14 @@ export class NpmAuditAdapter implements ScannerAdapter {
         command,
         cwd,
         description: isBreaking
-          ? `Upgrade ${packageName} to ${vuln.fixAvailable.version}; review breaking changes before merging`
+          ? isDirectPackageFix
+            ? `Upgrade ${packageName} to ${fixVersion}; review breaking changes before merging`
+            : `Fix ${packageName} vulnerability by upgrading ${fixPackageName} to ${fixVersion}; review breaking changes`
           : "Apply available non-breaking audit fixes",
         descriptionId: isBreaking
-          ? `Upgrade ${packageName} ke ${vuln.fixAvailable.version}; tinjau breaking change sebelum merge`
+          ? isDirectPackageFix
+            ? `Upgrade ${packageName} ke ${fixVersion}; tinjau breaking change sebelum merge`
+            : `Perbaiki kerentanan ${packageName} dengan meng-upgrade ${fixPackageName} ke ${fixVersion}; tinjau breaking change`
           : "Terapkan perbaikan audit tanpa breaking change yang tersedia",
         isBreaking,
         packageManager,
@@ -298,14 +305,18 @@ export class NpmAuditAdapter implements ScannerAdapter {
           "Menggunakan dependensi dengan kerentanan yang diketahui mengekspos aplikasi Anda terhadap serangan yang terdokumentasi dengan baik dan sering diotomasi.",
         remediationEn: [
           typeof vuln.fixAvailable === "object"
-            ? `Upgrade ${vuln.fixAvailable.name} to version ${vuln.fixAvailable.version}`
+            ? packageName === vuln.fixAvailable.name
+              ? `Upgrade ${packageName} to version ${vuln.fixAvailable.version}`
+              : `Update ${packageName} by upgrading its parent dependency ${vuln.fixAvailable.name} to version ${vuln.fixAvailable.version}`
             : "Run npm audit fix to apply available patches",
           "Review the advisory for specific impact and workarounds",
           "Consider alternative packages if no fix is available",
         ],
         remediationId: [
           typeof vuln.fixAvailable === "object"
-            ? `Upgrade ${vuln.fixAvailable.name} ke versi ${vuln.fixAvailable.version}`
+            ? packageName === vuln.fixAvailable.name
+              ? `Upgrade ${packageName} ke versi ${vuln.fixAvailable.version}`
+              : `Perbarui ${packageName} dengan meng-upgrade dependensi induknya ${vuln.fixAvailable.name} ke versi ${vuln.fixAvailable.version}`
             : "Jalankan npm audit fix untuk menerapkan patch yang tersedia",
           "Tinjau advisory untuk dampak spesifik dan solusi sementara",
           "Pertimbangkan paket alternatif jika tidak ada perbaikan yang tersedia",

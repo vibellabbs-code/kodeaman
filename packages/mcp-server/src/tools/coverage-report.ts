@@ -34,8 +34,16 @@ export function registerCoverageReportTool(server: McpServer): void {
         .describe(
           "Project root to load config from. Used when scannerCoverage is not provided.",
         ),
+      scanMode: z
+        .enum(["standard", "owasp"])
+        .optional()
+        .describe("Coverage mode. Use 'owasp' when reporting coverage from the OWASP orchestrator."),
+      owaspCategories: z
+        .string()
+        .optional()
+        .describe("JSON array of OWASP category codes scanned by the OWASP orchestrator, such as [\"A01\",\"A02\"]."),
     },
-    async ({ scannerCoverage, findings, repoRoot }) => {
+    async ({ scannerCoverage, findings, repoRoot, scanMode, owaspCategories }) => {
       try {
         let coverage: ScannerCoverage[];
         let parsedFindings: NormalizedFinding[] = [];
@@ -104,7 +112,16 @@ export function registerCoverageReportTool(server: McpServer): void {
           }
         }
 
-        const report = buildCoverageReport(coverage, parsedFindings);
+        const parsedOwaspCategories = owaspCategories
+          ? (JSON.parse(owaspCategories) as string[])
+          : [];
+        const report = buildCoverageReport(
+          coverage,
+          parsedFindings,
+          scanMode === "owasp"
+            ? { scanMode: "owasp", scannedCategories: parsedOwaspCategories }
+            : undefined,
+        );
 
         return {
           content: [

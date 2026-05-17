@@ -136,10 +136,16 @@ export function createScanCommand(): Command {
               pipeline.registerAdapter(new PlaywrightAdapter() as never);
             }
 
+            if (config.customRules) {
+              const { CustomRuleScanner } = await import("@kodeaman/custom-rules");
+              pipeline.registerAdapter(new CustomRuleScanner() as never);
+            }
+
             const pipelineResult = await pipeline.run({
               repoRoot,
               provider: "local",
-            });
+              config,
+            } as never);
             findings = pipelineResult.findings;
             coverageReport = pipelineResult.coverageReport;
           } catch (err) {
@@ -162,15 +168,39 @@ export function createScanCommand(): Command {
           bySeverity[f.severity]++;
         }
 
+        const scannersUsed = [...new Set(findings.map((f) => f.source))];
         const result: ScanResult = {
           findings,
           summary: {
             totalFindings: findings.length,
             bySeverity,
             scanDurationMs: 0,
-            scannersUsed: [...new Set(findings.map((f) => f.source))],
+            scannersUsed,
           },
         };
+
+        const { ScanHistoryStore } = await import("@kodeaman/history");
+        await new ScanHistoryStore().append({
+          timestamp: new Date().toISOString(),
+          projectPath: repoRoot,
+          scanMode: coverageReport?.scanMode ?? "standard",
+          findingsCount: findings.length,
+          bySeverity,
+          byCategory: findings.reduce<Record<string, number>>((counts, finding) => {
+            counts[finding.category] = (counts[finding.category] ?? 0) + 1;
+            return counts;
+          }, {}),
+          topFindings: [...findings]
+            .sort((a, b) => b.prioritization.priorityScore - a.prioritization.priorityScore)
+            .slice(0, 3)
+            .map((finding) => ({
+              title: finding.title,
+              severity: finding.severity,
+              priorityScore: finding.prioritization.priorityScore,
+            })),
+          scannersUsed,
+          coveragePercent: coverageReport?.overallCoveragePercent ?? 0,
+        });
 
         if (coverageReport && (opts.verbose || coverageReport.overallCoveragePercent < 100)) {
           const cliRenderer = new CLIRenderer();

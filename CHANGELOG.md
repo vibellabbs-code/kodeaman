@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-05-17
+
+### Fixed
+
+- **Priority scores always 0**: `ScanPipeline.run()` now integrates `Prioritizer.prioritize()` after deduplication, computing real priority scores based on severity, confidence, auth-path boost, internet exposure, dependency directness, fix availability, and other heuristics. Previously, adapters set `priorityScore: 0` as a placeholder and the pipeline never computed actual scores.
+- **OWASP finding duplication**: `OwaspScanOrchestrator` now runs the scan pipeline once and distributes findings across OWASP categories, instead of re-running the full pipeline for each of the 10 categories. Findings with an explicit `owaspCategory` (e.g., npm-audit's `A06-vulnerable-components`) are assigned only to that category. Remaining findings are assigned to their first CWE-matched category in OWASP order (A01-A10), preventing the same finding from appearing in multiple categories.
+- **PostCSS remediation text**: npm-audit adapter coaching now correctly distinguishes between direct and transitive dependency fixes. For transitive deps like PostCSS (fixed via upgrading Next.js), the remediation reads "Update postcss by upgrading its parent dependency next to version X" instead of the misleading "Upgrade next to version X". Fix command descriptions similarly clarify the vulnerable-package vs fix-package relationship. Both English and Bahasa Indonesia coaching text updated.
+- **Coverage report accuracy**: `buildCoverageReport()` now accepts optional `owaspOptions` parameter. When OWASP mode is active, categories scanned by the orchestrator are marked as covered regardless of static scanner-to-category mappings. A project scanning all 10 OWASP categories now correctly reports 100% coverage instead of 10%. New `scanMode` and `owaspScannedCategories` fields on `CoverageReport` provide scan context to consumers.
+
+### Added
+
+- `@kodeaman/adapters-bandit` -- Python SAST adapter using Bandit with JSON output parsing, CWE mapping (B101-B610), bilingual coaching, and auto-detection via `requirements.txt`, `pyproject.toml`, `setup.py`, or `Pipfile`
+- `@kodeaman/adapters-gosec` -- Go SAST adapter using gosec with JSON output parsing, CWE mapping (G101-G601), bilingual coaching, and auto-detection via `go.mod` or `go.sum`
+- `@kodeaman/adapters-cargo-audit` -- Rust SCA adapter using cargo-audit with JSON output parsing, RUSTSEC advisory mapping, bilingual coaching, and auto-detection via `Cargo.toml` or `Cargo.lock`
+- `@kodeaman/adapters-spotbugs` -- Java SAST adapter using SpotBugs with XML output parsing, bug pattern to CWE mapping, bilingual coaching, and auto-detection via `pom.xml`, `build.gradle`, or `build.gradle.kts`
+- `repoContext` field on `ScanContext` interface for passing repository metadata (framework, environment, public repo status) to the prioritizer during pipeline execution
+- `scannedCategories` field on `OwaspScanReport` for tracking which OWASP categories were actually scanned by the orchestrator
+- `"bandit"`, `"gosec"`, `"cargo-audit"`, `"spotbugs"` added to `FindingSource` union type in `@kodeaman/schema`
+- `@kodeaman/watcher` -- Real-time file watching with debounced scan triggers, configurable include/exclude globs, and `kodeaman watch` CLI command for continuous security monitoring during development
+- `@kodeaman/autofix` -- Automated fix runner that executes `FixCommand` entries from scan findings, with dry-run mode, breaking-change safety gates, command deduplication, and `kodeaman autofix` CLI command
+- `@kodeaman/custom-rules` -- Custom rule authoring engine with YAML rule definitions, regex pattern matching, zod schema validation, `CustomRuleScanner` adapter, and `kodeaman rules list|validate` CLI commands
+- `@kodeaman/dashboard` -- Lightweight web dashboard serving self-contained HTML with SVG trend charts, OWASP coverage grid, recent scans table, light/dark theme, and `kodeaman dashboard` CLI command (default port 4800)
+- `@kodeaman/history` -- Scan history storage with JSONL persistence, date/project filtering, trend aggregation, team collaboration config, and `kodeaman history show|trends|export` CLI commands
+
+### Changed
+
+- `ScanPipeline` now depends on `@kodeaman/prioritizer` and automatically scores all findings during the scan pipeline run
+- `OwaspScanOrchestrator.scanCategory()` replaced with `buildCategoryPhase()` -- a synchronous method that filters from pre-computed findings instead of re-running the pipeline
+- `buildCoverageReport()` signature extended with optional `owaspOptions` parameter (backward compatible)
+- MCP `kodeaman_coverage_report` tool accepts optional `scanMode` and `owaspCategories` parameters for OWASP-aware coverage reporting
+- Workspace expanded from 27 to 36 packages with 4 language adapters and 5 feature packages
+- CLI expanded from 3 commands (`scan`, `init`, `owasp-scan`) to 8 commands with `watch`, `autofix`, `rules`, `dashboard`, `history`
+
 ## [0.4.0] - 2026-05-16
 
 ### Added

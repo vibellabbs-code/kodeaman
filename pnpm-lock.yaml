@@ -146,6 +146,9 @@ importers:
       '@kodeaman/adapters-zap':
         specifier: workspace:*
         version: link:../../packages/adapters-zap
+      '@kodeaman/autofix':
+        specifier: workspace:*
+        version: link:../../packages/autofix
       '@kodeaman/coaching':
         specifier: workspace:*
         version: link:../../packages/coaching
@@ -155,9 +158,18 @@ importers:
       '@kodeaman/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@kodeaman/custom-rules':
+        specifier: workspace:*
+        version: link:../../packages/custom-rules
+      '@kodeaman/dashboard':
+        specifier: workspace:*
+        version: link:../../packages/dashboard
       '@kodeaman/gamification':
         specifier: workspace:*
         version: link:../../packages/gamification
+      '@kodeaman/history':
+        specifier: workspace:*
+        version: link:../../packages/history
       '@kodeaman/output-html':
         specifier: workspace:*
         version: link:../../packages/output-html
@@ -179,6 +191,9 @@ importers:
       '@kodeaman/schema':
         specifier: workspace:*
         version: link:../../packages/schema
+      '@kodeaman/watcher':
+        specifier: workspace:*
+        version: link:../../packages/watcher
       commander:
         specifier: ^12.1.0
         version: 12.1.0
@@ -194,6 +209,54 @@ importers:
         version: 2.1.9(@types/node@22.19.19)
 
   apps/docs-site: {}
+
+  packages/adapters-bandit:
+    dependencies:
+      '@kodeaman/core':
+        specifier: workspace:*
+        version: link:../core
+      '@kodeaman/schema':
+        specifier: workspace:*
+        version: link:../schema
+    devDependencies:
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.0
+        version: 2.1.9(@types/node@22.19.19)
+
+  packages/adapters-cargo-audit:
+    dependencies:
+      '@kodeaman/core':
+        specifier: workspace:*
+        version: link:../core
+      '@kodeaman/schema':
+        specifier: workspace:*
+        version: link:../schema
+    devDependencies:
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.0
+        version: 2.1.9(@types/node@22.19.19)
+
+  packages/adapters-gosec:
+    dependencies:
+      '@kodeaman/core':
+        specifier: workspace:*
+        version: link:../core
+      '@kodeaman/schema':
+        specifier: workspace:*
+        version: link:../schema
+    devDependencies:
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.0
+        version: 2.1.9(@types/node@22.19.19)
 
   packages/adapters-npm-audit:
     dependencies:
@@ -237,12 +300,50 @@ importers:
         specifier: ^2.1.0
         version: 2.1.9(@types/node@22.19.19)
 
+  packages/adapters-spotbugs:
+    dependencies:
+      '@kodeaman/core':
+        specifier: workspace:*
+        version: link:../core
+      '@kodeaman/schema':
+        specifier: workspace:*
+        version: link:../schema
+    devDependencies:
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.0
+        version: 2.1.9(@types/node@22.19.19)
+
   packages/adapters-zap:
     dependencies:
       '@kodeaman/schema':
         specifier: workspace:*
         version: link:../schema
     devDependencies:
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.0
+        version: 2.1.9(@types/node@22.19.19)
+
+  packages/autofix:
+    dependencies:
+      '@kodeaman/config':
+        specifier: workspace:*
+        version: link:../config
+      '@kodeaman/core':
+        specifier: workspace:*
+        version: link:../core
+      '@kodeaman/schema':
+        specifier: workspace:*
+        version: link:../schema
+    devDependencies:
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.19
       typescript:
         specifier: ^5.6.0
         version: 5.9.3
@@ -287,9 +388,59 @@ importers:
 
   packages/core:
     dependencies:
+      '@kodeaman/prioritizer':
+        specifier: workspace:*
+        version: link:../prioritizer
       '@kodeaman/schema':
         specifier: workspace:*
         version: link:../schema
+    devDependencies:
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.19
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.0
+        version: 2.1.9(@types/node@22.19.19)
+
+  packages/custom-rules:
+    dependencies:
+      '@kodeaman/config':
+        specifier: workspace:*
+        version: link:../config
+      '@kodeaman/core':
+        specifier: workspace:*
+        version: link:../core
+      '@kodeaman/schema':
+        specifier: workspace:*
+        version: link:../schema
+      yaml:
+        specifier: ^2.6.0
+        version: 2.9.0
+      zod:
+        specifier: ^3.23.8
+        version: 3.25.76
+    devDependencies:
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.19
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.0
+        version: 2.1.9(@types/node@22.19.19)
+
+  packages/dashboard:
+    dependencies:
+      '@kodeaman/schema':
+        specifier: workspace:*
+        version: link:../schema
+      '@kodeaman/telemetry':
+        specifier: workspace:*
+        version: link:../telemetry
     devDependencies:
       '@types/node':
         specifier: ^22.0.0
@@ -307,6 +458,25 @@ importers:
         specifier: workspace:*
         version: link:../schema
     devDependencies:
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.0
+        version: 2.1.9(@types/node@22.19.19)
+
+  packages/history:
+    dependencies:
+      '@kodeaman/config':
+        specifier: workspace:*
+        version: link:../config
+      '@kodeaman/schema':
+        specifier: workspace:*
+        version: link:../schema
+    devDependencies:
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.19
       typescript:
         specifier: ^5.6.0
         version: 5.9.3
@@ -541,6 +711,25 @@ importers:
       typescript:
         specifier: ^5.6.0
         version: 5.9.3
+
+  packages/watcher:
+    dependencies:
+      '@kodeaman/config':
+        specifier: workspace:*
+        version: link:../config
+      '@kodeaman/core':
+        specifier: workspace:*
+        version: link:../core
+    devDependencies:
+      '@types/node':
+        specifier: ^22.0.0
+        version: 22.19.19
+      typescript:
+        specifier: ^5.6.0
+        version: 5.9.3
+      vitest:
+        specifier: ^2.1.0
+        version: 2.1.9(@types/node@22.19.19)
 
 packages:
 
