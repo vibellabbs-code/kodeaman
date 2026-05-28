@@ -11,11 +11,6 @@ export function ScannersIndex() {
   return (
     <section className="block" id="index">
       <div className="container">
-        <div className="section-mark">
-          <span className="roman">IV.</span>
-          <span className="name">Scanners index</span>
-          <span className="line" />
-        </div>
         <div className="section-head">
           <h2>Six independent passes. One normalized schema.</h2>
           <p className="lede">

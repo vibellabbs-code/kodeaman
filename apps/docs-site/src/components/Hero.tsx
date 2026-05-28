@@ -46,11 +46,6 @@ export function Hero() {
             </button>
           </div>
         </div>
-        <div className="hero-foot">
-          <span>OWASP A01–A10</span>
-          <span>· EN / ID remediation</span>
-          <span>· evidence-first</span>
-        </div>
       </div>
     </section>
   )

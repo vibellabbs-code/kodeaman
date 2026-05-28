@@ -79,6 +79,7 @@ body {
   text-rendering: optimizeLegibility;
   min-width: 320px;
   min-height: 100vh;
+  overflow-anchor: none;
 }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
@@ -632,9 +633,11 @@ section.block + section.block { border-top: 1px solid var(--rule); }
 @keyframes pulse2 { 50% { opacity: 0.4; } }
 .term2-body {
   padding: 18px 24px 56px;
-  min-height: 440px;
+  height: 520px;
   white-space: pre;
-  overflow-x: auto;
+  overflow: hidden;
+  overflow-anchor: none;
+  contain: strict;
 }
 .t2line { display: block; min-height: 1.75em; }
 .t2line.dim { color: #9c9583; }
@@ -875,5 +878,5 @@ section.block + section.block { border-top: 1px solid var(--rule); }
   .nav-inner { gap: 14px; }
   .hero-cmd { font-size: 12px; flex-wrap: wrap; padding: 12px 14px; }
   .exhibit-meta { gap: 14px; }
-  .term2-body { font-size: 12px; padding-right: 16px; }
+  .term2-body { font-size: 12px; padding-right: 16px; height: 480px; }
 }

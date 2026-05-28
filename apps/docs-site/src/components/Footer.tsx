@@ -46,7 +46,6 @@ export function Footer() {
             </div>
             <p className="footer-tag">
               Evidence-first website security scanning with practical remediation guidance.
-              <span className="id">Pemindai keamanan situs web berbasis bukti.</span>
             </p>
           </div>
           {COLUMNS.map((col) => (
@@ -70,7 +69,6 @@ export function Footer() {
           <span>
             <b>Apache 2.0</b> · 2026 AspidaSec
           </span>
-          <span>Athens × Bandung · built where rigor meets craft</span>
         </div>
       </div>
     </footer>

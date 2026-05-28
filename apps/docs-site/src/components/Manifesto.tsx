@@ -6,7 +6,6 @@ export function Manifesto() {
           “Most scanners detect.
           <br />A good scanner makes the fix obvious.”
         </blockquote>
-        <div className="attribution">AspidaSec · Athens × Bandung</div>
       </div>
     </section>
   )

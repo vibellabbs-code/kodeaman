@@ -42,11 +42,6 @@ export function Install() {
   return (
     <section className="block" id="install">
       <div className="container">
-        <div className="section-mark">
-          <span className="roman">V.</span>
-          <span className="name">Install</span>
-          <span className="line" />
-        </div>
         <div className="section-head">
           <h2>Thirty seconds to your first scan.</h2>
           <p className="lede">

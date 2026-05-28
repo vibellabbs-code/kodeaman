@@ -2,11 +2,6 @@ export function ExhibitFinding() {
   return (
     <section className="block" id="exhibit">
       <div className="container">
-        <div className="section-mark">
-          <span className="roman">II.</span>
-          <span className="name">Exhibit finding</span>
-          <span className="line" />
-        </div>
         <div className="section-head">
           <h2>One finding, exactly as you'd defend it.</h2>
           <p className="lede">

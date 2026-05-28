@@ -11,11 +11,6 @@ export function EvidenceLedger() {
   return (
     <section className="block" id="evidence">
       <div className="container">
-        <div className="section-mark">
-          <span className="roman">I.</span>
-          <span className="name">Evidence ledger</span>
-          <span className="line" />
-        </div>
         <div className="section-head">
           <h2>Six entries, in order, on every scan.</h2>
           <p className="lede">
