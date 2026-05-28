@@ -1,0 +1,48 @@
+﻿---
+title: aspidasec_scan
+description: "Run the standard scan pipeline and return prioritized findings with remediation."
+---
+
+Runs the standard AspidaSec website security scan pipeline and returns deduplicated, prioritized findings with remediation guidance, OWASP classification, and fix suggestions.
+
+## Parameters
+
+<ParamField body="repoRoot" type="string" required>
+  Absolute path to the project to scan.
+</ParamField>
+
+<ParamField body="language" type="string">
+  Output language: `en` or `id`.
+</ParamField>
+
+<ParamField body="format" type="string">
+  Output format: `json` (default), `markdown`, or `sarif`.
+</ParamField>
+
+<ParamField body="scanners" type="object">
+  Boolean overrides for individual scanners: `semgrep`, `zapBaseline`, `npmAudit`, `playwright`.
+</ParamField>
+
+## Returns
+
+- **JSON** (default) — scan summary and findings, including totals, timing, coverage report, and preflight warnings.
+- **Markdown** — a rendered report when `format` is `markdown`.
+- **SARIF** — SARIF v2.1.0 when `format` is `sarif`.
+
+## Example call
+
+```json
+{
+  "tool": "aspidasec_scan",
+  "arguments": {
+    "repoRoot": "C:/Users/you/work/my-app",
+    "language": "id",
+    "format": "json",
+    "scanners": { "zapBaseline": false }
+  }
+}
+```
+
+<Tip>
+  To export findings later, capture the `findings` array from the JSON response and pass it to [`aspidasec_convert_sarif`](/api-reference/convert-sarif).
+</Tip>

@@ -1,0 +1,60 @@
+---
+title: Output Formats
+description: "Render the same findings as Markdown, HTML, JSON, SARIF, or a PR/MR comment."
+---
+
+A single scan produces one set of `NormalizedFinding` objects. Output renderers turn that into whatever surface you need — without changing the meaning of any finding.
+
+## Formats
+
+<CardGroup cols={2}>
+  <Card title="Markdown" icon="markdown">
+    Human-readable report and the basis for PR/MR comments. Default for `scan`.
+  </Card>
+  <Card title="HTML" icon="file-code">
+    Standalone evidence report with a coverage dashboard. Default for `owasp-scan`.
+  </Card>
+  <Card title="JSON" icon="brackets-curly">
+    Full structured output for automation and downstream tooling.
+  </Card>
+  <Card title="SARIF" icon="code-branch">
+    SARIF v2.1.0 for IDEs and GitHub Code Scanning.
+  </Card>
+</CardGroup>
+
+## Selecting a format
+
+```bash
+aspidasec scan ./project --format markdown
+aspidasec scan ./project --format json
+aspidasec scan ./project --format sarif
+aspidasec owasp-scan --format html --output report.html
+```
+
+Or set defaults in `.aspidasec.yml`:
+
+```yaml
+output:
+  markdown: true
+  html: false
+  sarif: false
+  json: false
+```
+
+## SARIF for IDEs and CI
+
+SARIF is the interchange format between AspidaSec findings and security review tools. Load it in VS Code or JetBrains, or upload it to GitHub Code Scanning.
+
+<Card title="SARIF & IDE integration" icon="code-branch" href="/integrations/sarif-ide">
+  Step-by-step setup for VS Code, JetBrains, and GitHub Code Scanning.
+</Card>
+
+## PR and MR comments
+
+The GitHub and GitLab bots render the Markdown report into a comment with a header, top findings, evidence, bilingual guidance, and — in OWASP mode — a category dashboard. See [GitHub Bot](/integrations/github-bot) and [GitLab Bot](/integrations/gitlab-bot).
+
+## Report semantics stay constant
+
+<Note>
+  Output renderers must not recalculate severity or change finding meaning. A finding reads the same whether it appears in the CLI, an HTML report, a SARIF file, or a PR comment. This consistency is an architectural rule, not a coincidence.
+</Note>

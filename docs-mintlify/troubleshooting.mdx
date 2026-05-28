@@ -1,0 +1,68 @@
+﻿---
+title: Troubleshooting
+description: "Fixes for common AspidaSec issues across scanning, MCP, SARIF, and bots."
+---
+
+Common problems and their fixes, grouped by area.
+
+## Scanning
+
+<AccordionGroup>
+  <Accordion title="Scans return missing-scanner warnings" icon="triangle-exclamation">
+    A scanner is enabled but not installed, so it was skipped. Run [`aspidasec_preflight`](/api-reference/preflight) (or check the coverage report) and install what is missing — see [Installation](/get-started/installation). Skipped scanners never fabricate findings; the gap is reported honestly.
+  </Accordion>
+  <Accordion title="No files are scanned / repoRoot errors" icon="folder-open">
+    Pass an **absolute** path, not a relative one. Confirm the target directory contains the project files and any expected `.aspidasec.yml`.
+  </Accordion>
+  <Accordion title="The CLI exits with code 1" icon="circle-exclamation">
+    This is expected when findings reach `failOnSeverity`, or on a scan error. Lower the threshold in `.aspidasec.yml` if you want CI to pass with known findings, or fix the findings.
+  </Accordion>
+  <Accordion title="ZAP did not run" icon="docker">
+    ZAP needs Docker available. Install/start Docker, or disable `zapBaseline` in config if dynamic scanning is not needed.
+  </Accordion>
+</AccordionGroup>
+
+## MCP server
+
+<AccordionGroup>
+  <Accordion title="The MCP server does not start" icon="server">
+    Confirm Node.js 20+. If using `npx`, confirm the package resolves from your registry. If using a local path, build the package first so `dist/index.js` exists. Use absolute paths in client config.
+  </Accordion>
+  <Accordion title="The assistant cannot see AspidaSec tools" icon="eye-slash">
+    Restart or reload the client after editing configuration. Confirm the server name is unique in the MCP config. Check client logs for stdio startup errors, and verify the command works outside the client.
+  </Accordion>
+  <Accordion title="Scans from the assistant find nothing" icon="magnifying-glass">
+    Pass an absolute `repoRoot`. Confirm the client has filesystem access to the target directory. Use the `scanners` override to disable scanners that are intentionally unavailable.
+  </Accordion>
+</AccordionGroup>
+
+## SARIF
+
+<AccordionGroup>
+  <Accordion title="SARIF opens as text but shows no results" icon="file-lines">
+    Ensure the file contains only SARIF JSON — strip any Markdown fences. Use a `.sarif` or `.sarif.json` extension. Regenerate with `format: "sarif"` or [`aspidasec_convert_sarif`](/api-reference/convert-sarif).
+  </Accordion>
+  <Accordion title="Results don't map to source" icon="map-pin">
+    Generate SARIF from the same checkout you open, and keep it with the repository root.
+  </Accordion>
+</AccordionGroup>
+
+## Bots
+
+<AccordionGroup>
+  <Accordion title="Bot does not respond to PRs/MRs" icon="robot">
+    Check webhook delivery in the provider settings (GitHub App → Advanced, or GitLab → Webhooks → Recent Deliveries). Confirm the webhook URL is reachable and the secret matches.
+  </Accordion>
+  <Accordion title="Comment is empty" icon="comment-slash">
+    Scanners are not installed in the bot runtime. Add them to the Dockerfile.
+  </Accordion>
+  <Accordion title="Duplicate comments / notes" icon="copy">
+    Both bots update a single comment via a hidden marker. Duplicates usually mean multiple bot instances are running — consolidate to one.
+  </Accordion>
+</AccordionGroup>
+
+## Still stuck?
+
+<Card title="Open an issue" icon="github" href="https://github.com/kaa911-syp/AspidaSec/issues">
+  Report a bug or ask a question on GitHub.
+</Card>

@@ -1,0 +1,36 @@
+---
+title: dashboard
+description: "Serve a local security trends dashboard from telemetry data."
+---
+
+```bash
+aspidasec dashboard [options]
+```
+
+Starts a local web dashboard showing security trends from your telemetry data. It is a local, optional view — AspidaSec stays CLI-first and never requires the dashboard to scan.
+
+## Examples
+
+<CodeGroup>
+```bash Default port
+aspidasec dashboard
+```
+
+```bash Custom port and data directory
+aspidasec dashboard --port 5000 --data-dir ./.aspidasec/telemetry
+```
+</CodeGroup>
+
+## Options
+
+<ParamField path="--port <port>" type="string" default="4800">
+  Port to listen on.
+</ParamField>
+
+<ParamField path="--data-dir <path>" type="string" default=".aspidasec/telemetry">
+  Directory containing telemetry JSONL data.
+</ParamField>
+
+<Note>
+  The dashboard reads local telemetry written by scans. It is not a hosted service and is not part of the MVP golden path.
+</Note>

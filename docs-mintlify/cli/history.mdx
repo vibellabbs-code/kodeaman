@@ -1,0 +1,58 @@
+---
+title: history
+description: "Show scan history, finding trends, and exports."
+---
+
+```bash
+aspidasec history <subcommand> [options]
+```
+
+Displays historical scan data so you can track whether findings are trending up or down over time.
+
+## Subcommands
+
+### show
+
+Display recent scan history.
+
+```bash
+aspidasec history show --limit 20 --project ./my-project
+```
+
+<ParamField path="-l, --limit <number>" type="string" default="10">
+  Maximum rows to show.
+</ParamField>
+<ParamField path="-p, --project <path>" type="string">
+  Filter by project path.
+</ParamField>
+
+### trends
+
+Show finding trends as an ASCII chart.
+
+```bash
+aspidasec history trends --days 30
+```
+
+<ParamField path="-d, --days <number>" type="string" default="14">
+  Number of days to include.
+</ParamField>
+
+### export
+
+Export scan history to a file format.
+
+```bash
+aspidasec history export --format csv --project ./my-project
+```
+
+<ParamField path="-f, --format <format>" type="string" default="json">
+  Export format: `json` or `csv`.
+</ParamField>
+<ParamField path="-p, --project <path>" type="string">
+  Filter by project path.
+</ParamField>
+
+<Note>
+  History is a secondary, local feature — the CLI report remains the primary surface. History data also feeds the local [dashboard](/cli/dashboard).
+</Note>

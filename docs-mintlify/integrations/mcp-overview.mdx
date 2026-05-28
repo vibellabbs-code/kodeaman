@@ -1,0 +1,89 @@
+﻿---
+title: AI Assistant Integration (MCP)
+description: "Connect AspidaSec's scan tools to Claude, Cursor, VS Code, and Windsurf via MCP."
+---
+
+The AspidaSec MCP server lets AI coding assistants run scans, inspect findings, and request fixes without leaving the editor. It runs over **stdio** and registers eight tools — see the [MCP API](/api-reference/introduction).
+
+<Info>
+  This page is about the **AspidaSec scan server** that runs *on your machine*. For connecting AI tools to the *published AspidaSec documentation* (the Mintlify-hosted Docs MCP), see [Documentation MCP](/integrations/docs-mcp).
+</Info>
+
+## Standard configuration
+
+Every supported client uses the same stdio command. Pick the form that matches how AspidaSec is installed.
+
+<CodeGroup>
+```json From npm
+{
+  "mcpServers": {
+    "aspidasec": {
+      "command": "npx",
+      "args": ["-y", "@aspidasec/mcp-server"]
+    }
+  }
+}
+```
+
+```json From a local build
+{
+  "mcpServers": {
+    "aspidasec": {
+      "command": "node",
+      "args": ["C:/path/to/AspidaSec/packages/mcp-server/dist/index.js"]
+    }
+  }
+}
+```
+</CodeGroup>
+
+<Warning>
+  For a local build, run the MCP server package build first so `dist/index.js` exists. Use **absolute** paths in client config to avoid working-directory ambiguity.
+</Warning>
+
+## Per-client setup
+
+<CardGroup cols={2}>
+  <Card title="Claude" icon="robot" href="/integrations/claude">
+    Claude Code and Claude Desktop.
+  </Card>
+  <Card title="Cursor" icon="bolt" href="/integrations/cursor">
+    Workspace or global `mcp.json`.
+  </Card>
+  <Card title="VS Code" icon="code" href="/integrations/vscode">
+    MCP-capable extensions plus SARIF viewing.
+  </Card>
+  <Card title="Windsurf" icon="wind" href="/integrations/windsurf">
+    Windsurf MCP server configuration.
+  </Card>
+</CardGroup>
+
+## A typical assistant workflow
+
+<Steps>
+  <Step title="Preflight">
+    *"Run AspidaSec preflight and tell me which scanners are missing."* → [`aspidasec_preflight`](/api-reference/preflight)
+  </Step>
+  <Step title="List scanners">
+    *"List the AspidaSec scanners available here."* → [`aspidasec_list_scanners`](/api-reference/list-scanners)
+  </Step>
+  <Step title="Scan">
+    *"Scan C:/work/my-app and return JSON findings."* → [`aspidasec_scan`](/api-reference/scan) (use an absolute path)
+  </Step>
+  <Step title="Explain & fix">
+    Pass a finding back for [`aspidasec_explain_finding`](/api-reference/explain-finding) and [`aspidasec_suggest_fix`](/api-reference/suggest-fix).
+  </Step>
+  <Step title="Export">
+    [`aspidasec_convert_sarif`](/api-reference/convert-sarif) to produce SARIF for IDEs or CI.
+  </Step>
+</Steps>
+
+## Prerequisites
+
+- Node.js 20 or newer.
+- Scanner dependencies for the checks you want — see [Installation](/get-started/installation).
+- Absolute `repoRoot` paths for scan tools.
+
+<Card title="Troubleshooting MCP" icon="life-ring" href="/troubleshooting">
+  Server won't start, tools not visible, or `repoRoot` errors.
+</Card>

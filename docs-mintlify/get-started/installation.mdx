@@ -1,0 +1,73 @@
+﻿---
+title: Installation
+description: "Install AspidaSec from source and set up the scanner dependencies you need."
+---
+
+AspidaSec orchestrates external scanners. Install the CLI first, then add the scanner engines for the coverage you want. Scanners that are not installed are **skipped cleanly** — they never produce fabricated findings.
+
+## Install the CLI
+
+<Steps>
+  <Step title="Clone and install">
+    ```bash
+    git clone https://github.com/kaa911-syp/AspidaSec.git
+    cd AspidaSec
+    pnpm install
+    ```
+  </Step>
+  <Step title="Build all packages">
+    ```bash
+    pnpm run build
+    ```
+    Turborepo builds packages in dependency order. Run this before invoking the CLI or dependent tests.
+  </Step>
+  <Step title="Run the CLI">
+    ```bash
+    pnpm --filter @aspidasec/cli start -- scan .
+    ```
+  </Step>
+</Steps>
+
+## Scanner dependencies
+
+| Scanner | Coverage | Install |
+| --- | --- | --- |
+| **npm audit** | Dependency vulnerabilities | Built into npm — no extra install |
+| **Semgrep** | Static (SAST) web rules | [semgrep.dev/docs](https://semgrep.dev/docs/getting-started/) — `pip install semgrep` |
+| **OWASP ZAP** | Dynamic (DAST) checks | [ZAP baseline (Docker)](https://www.zaproxy.org/docs/docker/baseline-scan/) |
+| **Bandit** | Python SAST | `pip install bandit` |
+| **gosec** | Go SAST | `go install github.com/securego/gosec/v2/cmd/gosec@latest` |
+| **cargo-audit** | Rust dependency audit | `cargo install cargo-audit` |
+| **SpotBugs** | Java/JVM SAST | [spotbugs.github.io](https://spotbugs.github.io/) |
+| **Playwright** | Route discovery / browser context | `pnpm exec playwright install` |
+
+<Tip>
+  Run a readiness check before a full scan. From an AI assistant, call the [`aspidasec_preflight`](/api-reference/preflight) MCP tool; it reports your platform, scanner availability, and install instructions for whatever is missing.
+</Tip>
+
+## Windows and WSL
+
+Some Linux-based scanner tooling runs best under WSL on Windows. AspidaSec detects the environment automatically. To bypass the WSL availability check, pass `--skip-wsl-check` to `owasp-scan` or set `environment.skipWslCheck: true` in your config.
+
+<Warning>
+  Skipping the WSL check does not install missing tooling — it only suppresses the check. If a Linux-only scanner is required and unavailable, it will be reported as skipped in the coverage report.
+</Warning>
+
+## Verify the install
+
+```bash
+pnpm --filter @aspidasec/cli start -- scan --help
+```
+
+You should see the available options for the `scan` command. If the command is not found, confirm `pnpm run build` completed without errors.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Configuration" icon="sliders" href="/get-started/configuration">
+    Set up `.aspidasec.yml`.
+  </Card>
+  <Card title="Quickstart" icon="rocket" href="/get-started/quickstart">
+    Run your first scan.
+  </Card>
+</CardGroup>

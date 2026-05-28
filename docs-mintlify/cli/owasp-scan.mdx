@@ -1,0 +1,88 @@
+---
+title: owasp-scan
+description: "Run a structured OWASP Top 10 scan with per-category evidence and gates."
+---
+
+```bash
+aspidasec owasp-scan [options]
+```
+
+Runs the OWASP orchestrator: per-category scans, confidence and evidence gates, OWASP mapping, and an evidence report. By default it writes HTML to `aspidasec-owasp-report.html`.
+
+## Examples
+
+<CodeGroup>
+```bash Full scan
+aspidasec owasp-scan
+```
+
+```bash Specific categories
+aspidasec owasp-scan --categories A01,A03,A06
+```
+
+```bash High confidence
+aspidasec owasp-scan --confidence high
+```
+
+```bash Parallel categories
+aspidasec owasp-scan --parallel
+```
+
+```bash Markdown (id)
+aspidasec owasp-scan --format markdown --language id
+```
+</CodeGroup>
+
+## Options
+
+<ParamField path="-c, --config <path>" type="string" default=".aspidasec.yml in cwd">
+  Path to the configuration file.
+</ParamField>
+
+<ParamField path="-f, --format <fmt>" type="string" default="html">
+  Output format: `html`, `markdown`, or `json`.
+</ParamField>
+
+<ParamField path="-l, --language <lang>" type="string" default="from config">
+  Output language: `en` or `id`.
+</ParamField>
+
+<ParamField path="-p, --preset <name>" type="string">
+  Framework preset.
+</ParamField>
+
+<ParamField path="-o, --output <file>" type="string" default="aspidasec-owasp-report.html">
+  Output file path.
+</ParamField>
+
+<ParamField path="--parallel" type="boolean" default="false">
+  Run categories in parallel.
+</ParamField>
+
+<ParamField path="--categories <list>" type="string" default="A01–A10">
+  Comma-separated categories, e.g. `A01,A03,A06`.
+</ParamField>
+
+<ParamField path="--confidence <level>" type="string" default="low">
+  Confidence gate: `low`, `medium`, or `high`.
+</ParamField>
+
+<ParamField path="--no-evidence-gate" type="boolean" default="evidence required">
+  Include findings without scanner evidence.
+</ParamField>
+
+<ParamField path="--skip-wsl-check" type="boolean" default="false">
+  Skip the WSL availability check on Windows.
+</ParamField>
+
+<ParamField path="-y, --yes" type="boolean" default="false">
+  Auto-accept setup guidance prompts.
+</ParamField>
+
+<ParamField path="-v, --verbose" type="boolean" default="false">
+  Enable verbose output.
+</ParamField>
+
+<Card title="OWASP scanning concepts" icon="shield-halved" href="/security-analysis/owasp-scan">
+  How the orchestrator, categories, and gates work.
+</Card>

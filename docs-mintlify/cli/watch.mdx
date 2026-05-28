@@ -1,0 +1,44 @@
+---
+title: watch
+description: "Re-scan automatically when source files change."
+---
+
+```bash
+aspidasec watch [options]
+```
+
+Watches source files and runs a scan whenever they change. Useful for tight feedback loops while remediating findings.
+
+## Examples
+
+<CodeGroup>
+```bash Watch current directory
+aspidasec watch
+```
+
+```bash Watch a specific path
+aspidasec watch --path ./src
+```
+
+```bash JSON output, slower debounce
+aspidasec watch --format json --debounce 800
+```
+</CodeGroup>
+
+## Options
+
+<ParamField path="--path <path>" type="string" default="cwd">
+  Path to watch for changes.
+</ParamField>
+
+<ParamField path="--debounce <ms>" type="string" default="300">
+  Debounce delay in milliseconds between detecting a change and scanning.
+</ParamField>
+
+<ParamField path="--format <format>" type="string" default="markdown">
+  Output format: `markdown` or `json`.
+</ParamField>
+
+<Tip>
+  Increase `--debounce` on large projects so a burst of saves triggers one scan instead of many.
+</Tip>

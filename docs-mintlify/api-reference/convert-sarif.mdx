@@ -1,0 +1,35 @@
+---
+title: aspidasec_convert_sarif
+description: "Convert AspidaSec findings to SARIF v2.1.0."
+---
+
+Converts AspidaSec findings to SARIF v2.1.0 for GitHub Code Scanning, the VS Code SARIF Viewer, JetBrains, and other SARIF-compatible tools.
+
+## Parameters
+
+<ParamField body="findings" type="string" required>
+  A stringified JSON **array** of `NormalizedFinding` objects.
+</ParamField>
+
+## Returns
+
+SARIF v2.1.0 JSON.
+
+## Example call
+
+```json
+{
+  "tool": "aspidasec_convert_sarif",
+  "arguments": {
+    "findings": "[{...stringified NormalizedFinding...}]"
+  }
+}
+```
+
+<Warning>
+  Extract the `findings` field from a scan response before calling this tool — pass the array as a stringified JSON value, not the whole scan object. Save the returned SARIF as `.sarif` or `.sarif.json` with no surrounding prose or Markdown fences.
+</Warning>
+
+<Card title="SARIF & IDE integration" icon="code-branch" href="/integrations/sarif-ide">
+  Load SARIF into VS Code, JetBrains, and GitHub Code Scanning.
+</Card>

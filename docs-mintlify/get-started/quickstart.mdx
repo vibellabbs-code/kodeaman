@@ -1,0 +1,120 @@
+---
+title: Quickstart
+description: "Clone, build, configure, and run your first AspidaSec scan in five minutes."
+---
+
+This guide takes you from a fresh clone to a prioritized security report.
+
+<Note>
+  AspidaSec is a pnpm monorepo. You build it once, then run the CLI from the workspace. A published npm package and global install are also referenced where available.
+</Note>
+
+## Prerequisites
+
+<Steps>
+  <Step title="Install Node.js 20+">
+    Check with `node --version`. AspidaSec targets Node.js 20 or newer.
+  </Step>
+  <Step title="Install pnpm 8+">
+    ```bash
+    npm install -g pnpm
+    ```
+  </Step>
+  <Step title="Install at least one scanner">
+    npm audit ships with npm. For static and dynamic coverage, add [Semgrep](https://semgrep.dev/docs/getting-started/) and [OWASP ZAP](https://www.zaproxy.org/docs/docker/baseline-scan/). See [Installation](/get-started/installation) for the full matrix.
+  </Step>
+</Steps>
+
+## 1. Clone and build
+
+```bash
+git clone https://github.com/kaa911-syp/AspidaSec.git
+cd AspidaSec
+pnpm install
+pnpm run build
+```
+
+<Tip>
+  `pnpm run build` uses Turborepo and respects inter-package build order. Always build from the repo root before running the CLI.
+</Tip>
+
+## 2. Create a config
+
+Run the interactive wizard inside the project you want to scan:
+
+```bash
+aspidasec init
+```
+
+It writes a `.aspidasec.yml` with your chosen language, scanners, and preset. You can also run scans without a config — defaults apply.
+
+## 3. Run your first scan
+
+<CodeGroup>
+```bash Local project
+pnpm --filter @aspidasec/cli start -- scan ./my-project
+```
+
+```bash Deployed URL
+pnpm --filter @aspidasec/cli start -- scan https://example.com
+```
+</CodeGroup>
+
+The scan collects evidence, deduplicates, prioritizes, and prints the top findings with remediation guidance.
+
+## 4. Generate a shareable report
+
+<CodeGroup>
+```bash HTML (OWASP)
+pnpm --filter @aspidasec/cli start -- owasp-scan --format html --output report.html
+```
+
+```bash Markdown
+pnpm --filter @aspidasec/cli start -- scan ./my-project --format markdown
+```
+
+```bash SARIF (for CI / IDEs)
+pnpm --filter @aspidasec/cli start -- scan ./my-project --format sarif
+```
+</CodeGroup>
+
+## 5. Connect an AI assistant (optional)
+
+Expose the scan pipeline to Claude, Cursor, VS Code, or Windsurf through the MCP server:
+
+```json
+{
+  "mcpServers": {
+    "aspidasec": {
+      "command": "npx",
+      "args": ["-y", "@aspidasec/mcp-server"]
+    }
+  }
+}
+```
+
+Then ask the assistant to *"run an AspidaSec preflight and scan this workspace."* Full setup per client lives in [Integrations](/integrations/mcp-overview).
+
+## Exit codes
+
+| Code | Meaning |
+| --- | --- |
+| `0` | Scan completed; no findings at or above `failOnSeverity`. |
+| `1` | Findings at or above `failOnSeverity`, or a scan error. |
+
+## Where to go next
+
+<CardGroup cols={2}>
+  <Card title="Configuration" icon="sliders" href="/get-started/configuration">
+    Tune scanners, gates, and output in `.aspidasec.yml`.
+  </Card>
+  <Card title="OWASP scanning" icon="shield-halved" href="/security-analysis/owasp-scan">
+    Run structured Top 10 analysis with evidence by category.
+  </Card>
+  <Card title="CLI Reference" icon="terminal" href="/cli/overview">
+    Every command and flag.
+  </Card>
+  <Card title="GitHub Actions" icon="github" href="/integrations/github-actions">
+    Add AspidaSec to CI with SARIF upload.
+  </Card>
+</CardGroup>

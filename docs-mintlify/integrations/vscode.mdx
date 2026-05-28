@@ -1,0 +1,48 @@
+﻿---
+title: VS Code
+description: "Use AspidaSec in VS Code via an MCP-capable extension and the SARIF viewer."
+---
+
+VS Code works with AspidaSec in two complementary ways: running scans through an MCP-capable assistant, and reviewing results with a SARIF viewer.
+
+## 1. MCP server (run scans)
+
+Configure an MCP-capable VS Code assistant to launch the AspidaSec stdio server. The command is the same as every client:
+
+```json
+{
+  "mcpServers": {
+    "aspidasec": {
+      "command": "npx",
+      "args": ["-y", "@aspidasec/mcp-server"]
+    }
+  }
+}
+```
+
+For a local build, use `node` with the absolute path to `packages/mcp-server/dist/index.js`. Reload the window after editing the configuration so the tool list refreshes.
+
+<Note>
+  The exact settings location depends on which MCP-capable extension you use. Place the `mcpServers` block where that extension expects its MCP configuration.
+</Note>
+
+## 2. SARIF viewer (review findings)
+
+<Steps>
+  <Step title="Install a SARIF viewer">
+    Install a SARIF viewer extension from the VS Code Marketplace, such as **SARIF Viewer**.
+  </Step>
+  <Step title="Generate SARIF">
+    Run a scan with `format: "sarif"`, or convert findings with [`aspidasec_convert_sarif`](/api-reference/convert-sarif).
+  </Step>
+  <Step title="Save it">
+    Save the raw SARIF JSON as `aspidasec-results.sarif` near the scanned workspace.
+  </Step>
+  <Step title="Open it">
+    Open the workspace and import the SARIF file. Findings appear at their source locations for navigation.
+  </Step>
+</Steps>
+
+<Card title="Full SARIF guide" icon="code-branch" href="/integrations/sarif-ide">
+  VS Code, JetBrains, and GitHub Code Scanning in detail.
+</Card>

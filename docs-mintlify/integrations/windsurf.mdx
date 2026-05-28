@@ -1,0 +1,38 @@
+﻿---
+title: Windsurf
+description: "Connect the AspidaSec MCP server to Windsurf."
+---
+
+Add AspidaSec to Windsurf's MCP server configuration.
+
+```json
+{
+  "mcpServers": {
+    "aspidasec": {
+      "command": "npx",
+      "args": ["-y", "@aspidasec/mcp-server"]
+    }
+  }
+}
+```
+
+For local development, use `node` with the absolute path to the built entrypoint:
+
+```json
+{
+  "mcpServers": {
+    "aspidasec": {
+      "command": "node",
+      "args": ["C:/path/to/AspidaSec/packages/mcp-server/dist/index.js"]
+    }
+  }
+}
+```
+
+<Warning>
+  After saving, reload Windsurf and confirm the AspidaSec tools appear in the assistant's MCP tool list.
+</Warning>
+
+## Verify
+
+Ask the assistant to *"run an AspidaSec OWASP scan for A01, A03, and A06 with medium confidence."* It should call [`aspidasec_owasp_scan`](/api-reference/owasp-scan) with an absolute `repoRoot`. If tools do not appear, see [Troubleshooting](/troubleshooting).

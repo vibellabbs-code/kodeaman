@@ -1,0 +1,124 @@
+---
+title: GitHub Bot
+description: "Automatically review pull requests with prioritized security findings."
+---
+
+The GitHub bot (`@aspidasec/bot-github`) reviews pull requests using Probot. When a PR is opened or updated, it runs the configured scanners and posts a comment with prioritized findings and remediation.
+
+## Prerequisites
+
+- A GitHub App registered on your org or repository.
+- Node.js 18+.
+- Docker (recommended) or a Node.js host.
+- At least one scanner installed in the bot's runtime.
+
+## 1. Register a GitHub App
+
+<Steps>
+  <Step title="Create the app">
+    **Settings → Developer Settings → GitHub Apps → New GitHub App.**
+  </Step>
+  <Step title="Set permissions">
+    Pull requests: **Read & Write**. Contents: **Read**. Checks: **Read & Write** (optional).
+  </Step>
+  <Step title="Subscribe to events">
+    `pull_request` (opened, synchronize, reopened).
+  </Step>
+  <Step title="Generate a private key">
+    Download the `.pem` file. Note the **App ID** and **Installation ID**.
+  </Step>
+</Steps>
+
+## 2. Configure environment
+
+```bash .env
+# Required
+APP_ID=12345
+PRIVATE_KEY_PATH=./private-key.pem
+WEBHOOK_SECRET=your-webhook-secret
+
+# Optional
+GITHUB_CLIENT_ID=Iv1.abc123
+GITHUB_CLIENT_SECRET=secret123
+LOG_LEVEL=info
+PORT=3000
+```
+
+<Warning>
+  Store the `.pem` private key and `WEBHOOK_SECRET` securely (Docker secret or mounted volume). Never commit them. Use strong random webhook secrets.
+</Warning>
+
+## 3. Configure `.aspidasec.yml`
+
+Add a config to each repository the bot reviews:
+
+```yaml
+language: id
+
+scanners:
+  semgrep: true
+  zapBaseline: false
+  npmAudit: true
+
+prioritization:
+  maxFindingsInComment: 3
+  failOnSeverity: high
+
+output:
+  markdown: true
+```
+
+Enable OWASP mode for category-organized comments:
+
+```yaml
+owasp:
+  enabled: true
+  categories: [A01, A03, A06, A07]
+  confidenceGate: medium
+  evidenceGate: true
+  failOnSeverity: high
+```
+
+## 4. Deploy
+
+<CodeGroup>
+```bash Docker Compose (recommended)
+docker compose up -d bot-github
+```
+
+```bash Direct Node.js
+pnpm install
+pnpm build
+cd apps/bot-github
+node dist/index.js
+```
+</CodeGroup>
+
+Forward GitHub webhooks to `http://your-host:3000/api/github/webhooks` (use ngrok or a reverse proxy for local development).
+
+## 5. Verify
+
+Open a PR. Within 30–60 seconds the bot posts a comment with a scan summary, top findings, bilingual guidance, and — in OWASP mode — a category dashboard. Subsequent pushes update the same comment.
+
+## Comment structure
+
+| Section | Content |
+| --- | --- |
+| Header | Scan status, finding count, scanners used |
+| Top findings | Up to `maxFindingsInComment` highest-priority findings |
+| Finding detail | Severity, confidence, location, evidence, remediation |
+| Guidance | Bilingual remediation (en + id) |
+| OWASP dashboard | Category coverage (OWASP mode only) |
+
+## Troubleshooting
+
+| Issue | Solution |
+| --- | --- |
+| No response to PRs | Check webhook delivery in GitHub App → Advanced. |
+| Empty comment | Verify scanners are installed in the bot runtime. |
+| `PRIVATE_KEY_PATH` error | Ensure the `.pem` path is correct and readable. |
+| Duplicate comments | The bot updates via a hidden marker; check for multiple instances. |
+
+<Card title="Self-hosting & deployment" icon="server" href="/integrations/self-hosting">
+  Production Docker Compose setup for both bots.
+</Card>

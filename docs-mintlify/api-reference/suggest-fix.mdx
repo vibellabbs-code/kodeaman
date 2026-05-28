@@ -1,0 +1,41 @@
+﻿---
+title: aspidasec_suggest_fix
+description: "Return actionable remediation, commands, and safe examples for a finding."
+---
+
+Returns actionable remediation for a finding, including package-manager commands, remediation text, safe examples, and autofix eligibility. Best when you want concrete steps or commands.
+
+## Parameters
+
+<ParamField body="finding" type="string" required>
+  A stringified `NormalizedFinding` object.
+</ParamField>
+
+<ParamField body="language" type="string">
+  Preferred language: `en` or `id`.
+</ParamField>
+
+<ParamField body="packageManager" type="string">
+  Package manager for commands: `npm`, `pnpm`, or `yarn`.
+</ParamField>
+
+## Returns
+
+JSON fix guidance, filtered to the selected package manager when matching commands exist.
+
+## Example call
+
+```json
+{
+  "tool": "aspidasec_suggest_fix",
+  "arguments": {
+    "language": "id",
+    "packageManager": "pnpm",
+    "finding": "{...stringified NormalizedFinding...}"
+  }
+}
+```
+
+<Tip>
+  Pair with [`aspidasec_explain_finding`](/api-reference/explain-finding): explain for understanding, suggest-fix for the commands to run.
+</Tip>

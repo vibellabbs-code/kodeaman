@@ -1,0 +1,55 @@
+---
+title: aspidasec_owasp_scan
+description: "Run an OWASP Top 10 scan with per-category evidence and gates."
+---
+
+Runs an OWASP Top 10 scan with per-category evidence, remediation, and OWASP classification.
+
+## Parameters
+
+<ParamField body="repoRoot" type="string" required>
+  Absolute path to the project to scan.
+</ParamField>
+
+<ParamField body="language" type="string">
+  Output language: `en` or `id`.
+</ParamField>
+
+<ParamField body="categories" type="string[]">
+  Categories to scan, e.g. `["A01", "A03", "A06"]`. Defaults to all.
+</ParamField>
+
+<ParamField body="parallel" type="boolean">
+  Run categories concurrently.
+</ParamField>
+
+<ParamField body="confidenceGate" type="string">
+  Minimum confidence: `low`, `medium`, or `high`.
+</ParamField>
+
+<ParamField body="format" type="string">
+  Output format: `json` (default), `sarif`, or `markdown`.
+</ParamField>
+
+## Returns
+
+A structured OWASP scan result by default, SARIF when requested, or a Markdown report when requested.
+
+## Example call
+
+```json
+{
+  "tool": "aspidasec_owasp_scan",
+  "arguments": {
+    "repoRoot": "C:/Users/you/work/my-app",
+    "categories": ["A01", "A03", "A06"],
+    "confidenceGate": "medium",
+    "parallel": true,
+    "format": "json"
+  }
+}
+```
+
+<Card title="OWASP scanning concepts" icon="shield-halved" href="/security-analysis/owasp-scan">
+  Categories, gates, and orchestration explained.
+</Card>

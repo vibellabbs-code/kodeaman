@@ -1,0 +1,89 @@
+---
+title: AspidaSec
+description: "CLI-first website security scanning with evidence-backed findings, OWASP Top 10 coverage, and practical remediation guidance."
+mode: wide
+---
+
+<Note>
+  **AspidaSec scans modern web applications for OWASP-related risks, prioritizes the findings that matter, and produces developer-ready fixes and reports** — from the command line, your CI pipeline, or directly inside an AI coding assistant.
+</Note>
+
+## Why AspidaSec
+
+Most scanners detect issues but fail developers at the last mile: noisy output, duplicated findings, no prioritization, and no safe fix. AspidaSec focuses on the parts that make website security *actionable*.
+
+<CardGroup cols={2}>
+  <Card title="Evidence-first" icon="fingerprint">
+    Every finding traces to real scanner output. No fabricated vulnerabilities, severities, or endpoints.
+  </Card>
+  <Card title="Prioritized" icon="list-ordered">
+    Risk scoring separates the top issues from background noise so you fix what matters first.
+  </Card>
+  <Card title="Fix-first guidance" icon="wrench">
+    Each important finding ships with remediation steps, safe examples, and references — in English and Bahasa Indonesia.
+  </Card>
+  <Card title="CI & AI ready" icon="plug">
+    Markdown, HTML, JSON, and SARIF output, plus an MCP server for Claude, Cursor, VS Code, and Windsurf.
+  </Card>
+</CardGroup>
+
+## Start here
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/get-started/quickstart">
+    Run your first scan in under five minutes.
+  </Card>
+  <Card title="Installation" icon="download" href="/get-started/installation">
+    Install AspidaSec and its scanner dependencies.
+  </Card>
+  <Card title="CLI Reference" icon="terminal" href="/cli/overview">
+    Every command, flag, and exit code.
+  </Card>
+  <Card title="MCP API" icon="robot" href="/api-reference/introduction">
+    The eight tools AspidaSec exposes to AI assistants.
+  </Card>
+</CardGroup>
+
+## The golden path
+
+The first workflow is intentionally narrow — point AspidaSec at a project or a URL and get a prioritized report.
+
+<CodeGroup>
+```bash Local project
+aspidasec scan .
+```
+
+```bash Deployed site
+aspidasec scan https://example.com
+```
+
+```bash OWASP report
+aspidasec owasp-scan --format html --output report.html
+```
+</CodeGroup>
+
+Under the hood, a scan moves through one clear pipeline:
+
+<Steps>
+  <Step title="Collect">
+    Run dependency audit, OWASP-oriented static checks, dynamic scan, route crawling, and basic secret/config review.
+  </Step>
+  <Step title="Normalize">
+    Map every scanner result into a single finding schema and deduplicate equivalents.
+  </Step>
+  <Step title="Prioritize">
+    Score by severity, confidence, exploitability, exposure, affected file/endpoint, and fix availability.
+  </Step>
+  <Step title="Guide">
+    Attach practical remediation, safe code examples, and references.
+  </Step>
+  <Step title="Report">
+    Render Markdown, HTML, JSON, SARIF, or a PR/MR comment.
+  </Step>
+</Steps>
+
+## Built on a trust model
+
+<Card title="Trust before cleverness" icon="shield-check" href="/security-analysis/trust-model">
+  AI and generated guidance may summarize, translate, and suggest fixes — but they **never invent** findings, severities, evidence, or affected files. If a scanner fails, AspidaSec reports that instead of filling the gap. Read the full rule set.
+</Card>

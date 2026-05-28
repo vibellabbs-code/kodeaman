@@ -1,0 +1,125 @@
+---
+title: Self-Hosting & Deployment
+description: "Deploy the GitHub and GitLab bots with Docker Compose."
+---
+
+Deploy AspidaSec's PR/MR bots with Docker Compose. Both bots share a PostgreSQL database that stores webhook metadata for deduplication and audit.
+
+## Topology
+
+```text
+GitHub / GitLab ── webhook ──> bot-github :3000
+                               bot-gitlab :3001
+                                     │
+                                postgres :5432
+```
+
+## Prerequisites
+
+- Docker 20+ and Docker Compose v2.
+- A publicly reachable host (or a webhook proxy like ngrok / Cloudflare Tunnel).
+- GitHub App credentials — see [GitHub Bot](/integrations/github-bot).
+- A GitLab access token — see [GitLab Bot](/integrations/gitlab-bot).
+
+## 1. Environment
+
+```bash .env
+# ── GitHub Bot ──
+APP_ID=12345
+PRIVATE_KEY_PATH=./private-key.pem
+WEBHOOK_SECRET=github-webhook-secret
+PORT=3000
+
+# ── GitLab Bot ──
+GITLAB_TOKEN=glpat-xxxxxxxxxxxxxxxxxxxx
+GITLAB_WEBHOOK_SECRET=gitlab-webhook-secret
+# GITLAB_URL=https://gitlab.yourcompany.com
+
+# ── Database ──
+POSTGRES_DB=aspidasec
+POSTGRES_USER=aspidasec
+POSTGRES_PASSWORD=change-this-in-production
+
+# ── General ──
+LOG_LEVEL=info
+```
+
+## 2. Docker Compose
+
+The repository ships a root `docker-compose.yml`:
+
+<CodeGroup>
+```bash All services
+docker compose up -d
+```
+
+```bash GitHub bot only
+docker compose up -d bot-github postgres
+```
+
+```bash GitLab bot only
+docker compose up -d bot-gitlab postgres
+```
+</CodeGroup>
+
+```bash View logs / rebuild
+docker compose logs -f bot-github
+docker compose build --no-cache && docker compose up -d
+```
+
+## 3. Scanner availability in containers
+
+| Scanner | How to include |
+| --- | --- |
+| Semgrep | `RUN pip install semgrep` in the Dockerfile |
+| npm audit | Available with Node.js by default |
+| ZAP | Mount the Docker socket or run ZAP as a sidecar |
+
+## 4. Webhook routing
+
+Point webhooks directly at a public host, or proxy them:
+
+```nginx
+server {
+    listen 443 ssl;
+    server_name aspidasec.yourcompany.com;
+
+    location /api/github/ { proxy_pass http://localhost:3000; }
+    location /api/gitlab/ { proxy_pass http://localhost:3001; }
+}
+```
+
+For local development, expose with `ngrok http 3000` (GitHub) or `ngrok http 3001` (GitLab) and update the webhook URL.
+
+## 5. Production checklist
+
+<Steps>
+  <Step title="Rotate the database password">
+    Change `POSTGRES_PASSWORD` from the default.
+  </Step>
+  <Step title="Use strong webhook secrets">
+    Random values for `WEBHOOK_SECRET` and `GITLAB_WEBHOOK_SECRET`.
+  </Step>
+  <Step title="Secure the private key">
+    Store the GitHub App `.pem` as a Docker secret or mounted volume.
+  </Step>
+  <Step title="Enable TLS">
+    Terminate HTTPS at a reverse proxy or load balancer.
+  </Step>
+  <Step title="Reduce log noise">
+    Set `LOG_LEVEL=warn` in production.
+  </Step>
+  <Step title="Back up data">
+    Back up the PostgreSQL `pgdata` volume.
+  </Step>
+</Steps>
+
+## Troubleshooting
+
+| Issue | Solution |
+| --- | --- |
+| Container won't start | `docker compose logs <service>`. |
+| DB connection refused | Ensure `postgres` is healthy: `docker compose ps`. |
+| Webhook not received | Confirm the URL is publicly reachable and the secret matches. |
+| Scanner not found | Install the scanner in the bot Dockerfile. |
+| Port conflict | Change the host port mapping in `docker-compose.yml`. |

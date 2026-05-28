@@ -1,0 +1,61 @@
+---
+title: init
+description: "Generate a .aspidasec.yml configuration interactively."
+---
+
+```bash
+aspidasec init
+```
+
+Runs an interactive wizard in the current directory and writes `.aspidasec.yml`. Use it once per project to set language, scanners, preset, prioritization, and output defaults.
+
+## What it asks
+
+<Steps>
+  <Step title="Language">
+    `en` or `id` (default `id`). Sets the output language.
+  </Step>
+  <Step title="Preset">
+    `laravel`, `node-express`, or `wordpress` (default none).
+  </Step>
+  <Step title="Semgrep scanner">
+    Enable the Semgrep static scanner (default yes).
+  </Step>
+  <Step title="ZAP baseline scanner">
+    Enable the ZAP dynamic scanner (default no). If yes, you are asked for a target URL.
+  </Step>
+  <Step title="Gamification">
+    Enable XP, badges, and streaks (default yes).
+  </Step>
+</Steps>
+
+## Generated file
+
+A typical result:
+
+```yaml .aspidasec.yml
+# AspidaSec Configuration
+# https://github.com/kaa911-syp/AspidaSec
+
+language: id
+
+scanners:
+  semgrep: true
+  zapBaseline: false
+
+prioritization:
+  maxFindingsInComment: 3
+  failOnSeverity: critical
+
+gamification:
+  enabled: true
+
+output:
+  markdown: true
+  sarif: false
+  json: false
+```
+
+<Tip>
+  After init, run [`aspidasec scan`](/cli/scan) to start scanning. See [Configuration](/get-started/configuration) for every available key.
+</Tip>

@@ -1,0 +1,36 @@
+﻿---
+title: aspidasec_explain_finding
+description: "Explain a scanner-backed finding with bilingual remediation guidance."
+---
+
+Explains a scanner-backed security finding with bilingual remediation guidance, classification, priority, autofix eligibility, and fix commands. Best for review and context.
+
+## Parameters
+
+<ParamField body="finding" type="string" required>
+  A stringified `NormalizedFinding` object (JSON as a string, not an object).
+</ParamField>
+
+<ParamField body="language" type="string">
+  Preferred language: `en` or `id`.
+</ParamField>
+
+## Returns
+
+A JSON explanation with the preferred-language fields first, while retaining both English and Indonesian content.
+
+## Example call
+
+```json
+{
+  "tool": "aspidasec_explain_finding",
+  "arguments": {
+    "language": "id",
+    "finding": "{...stringified NormalizedFinding...}"
+  }
+}
+```
+
+<Note>
+  Pass a single finding object from a scan response, stringified. For concrete remediation commands instead of explanation, use [`aspidasec_suggest_fix`](/api-reference/suggest-fix).
+</Note>

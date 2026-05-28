@@ -1,0 +1,92 @@
+---
+title: Documentation MCP
+description: "Connect AI tools to the published AspidaSec docs through Mintlify's hosted MCP server — securely."
+---
+
+Mintlify automatically generates a **hosted MCP server from the published documentation**. AI tools (Claude, Cursor, VS Code) can connect to it to search and answer questions from these docs. This is different from the [AspidaSec scan server](/integrations/mcp-overview), which runs locally and performs security scans.
+
+<Warning>
+  **Never commit credentials.** The Docs MCP client secret must only be read from an environment variable at the point of use. Do not place it in `docs.json`, any `.mdx` file, or any tracked file. If a secret has ever been pasted into a chat, an issue, or a commit, **rotate it immediately** in the Mintlify dashboard.
+</Warning>
+
+## Where the values come from
+
+Generate or retrieve these in your Mintlify dashboard (the secret is shown only once at creation):
+
+| Value | Description |
+| --- | --- |
+| MCP endpoint URL | The hosted MCP URL for your published docs (from the dashboard). |
+| Client ID | OAuth client identifier for the connection. |
+| Client secret | OAuth client secret — **secret**, store in an env var. |
+
+## Store secrets in environment variables
+
+```bash .env (never commit — already in .gitignore)
+MINTLIFY_MCP_URL="https://<your-docs-domain>/mcp"
+MINTLIFY_MCP_CLIENT_ID="<your-client-id>"
+MINTLIFY_MCP_CLIENT_SECRET="<your-client-secret>"
+```
+
+Load them into your shell session before launching a client, for example:
+
+<CodeGroup>
+```bash macOS / Linux
+set -a; source .env; set +a
+```
+
+```powershell Windows (PowerShell)
+Get-Content .env | ForEach-Object {
+  if ($_ -match '^\s*([^#=]+)=(.*)$') {
+    [Environment]::SetEnvironmentVariable($matches[1].Trim(), $matches[2].Trim('"'))
+  }
+}
+```
+</CodeGroup>
+
+## Connect a client
+
+Reference the variables — never the literal secret — in your MCP client configuration. Most MCP clients support a remote/HTTP transport with bearer or OAuth auth:
+
+```json
+{
+  "mcpServers": {
+    "aspidasec-docs": {
+      "type": "http",
+      "url": "${MINTLIFY_MCP_URL}",
+      "headers": {
+        "Authorization": "Bearer ${MINTLIFY_MCP_CLIENT_SECRET}"
+      }
+    }
+  }
+}
+```
+
+<Note>
+  The exact auth shape (bearer token vs. OAuth client-credentials with `client_id` + `client_secret`) depends on how the connection is configured in your Mintlify dashboard. Use the dashboard's "Connect" instructions for the precise transport, and keep the secret in `MINTLIFY_MCP_CLIENT_SECRET` regardless of shape.
+</Note>
+
+## Security checklist
+
+<Steps>
+  <Step title="Secret in env var only">
+    Confirm the secret appears in no tracked file. `.env` is gitignored.
+  </Step>
+  <Step title="Rotate on exposure">
+    If the secret was ever shared in plaintext (chat, ticket, screen share), rotate it in the Mintlify dashboard before using it.
+  </Step>
+  <Step title="Least privilege">
+    Scope the connection to read-only docs access. The Docs MCP serves documentation; it should not need write access.
+  </Step>
+  <Step title="No frontend exposure">
+    Never embed the secret in client-side or browser-delivered code. It is a server/CLI-side credential.
+  </Step>
+</Steps>
+
+## Docs MCP vs. scan MCP
+
+| | Documentation MCP | [Scan MCP](/integrations/mcp-overview) |
+| --- | --- | --- |
+| Hosted by | Mintlify (cloud) | You (local stdio) |
+| Purpose | Answer questions from the docs | Run security scans |
+| Auth | OAuth / bearer secret | None (local process) |
+| Transport | HTTP | stdio |

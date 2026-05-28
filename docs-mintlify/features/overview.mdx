@@ -1,0 +1,59 @@
+---
+title: Features Overview
+description: "The capabilities that make AspidaSec findings trustworthy and actionable."
+---
+
+AspidaSec is organized so each capability has a single home. Detection lives in the scanner layer, judgment in the analysis layer, explanation in the guidance layer, and rendering in the output layer.
+
+## Core capabilities
+
+<CardGroup cols={2}>
+  <Card title="Multi-scanner collection" icon="radar" href="/features/scanners">
+    Semgrep, ZAP, npm audit, Bandit, gosec, cargo-audit, SpotBugs, and Playwright — unified into one schema.
+  </Card>
+  <Card title="Risk prioritization" icon="list-ordered" href="/features/prioritization">
+    Severity, confidence, exploitability, exposure, and fix availability combine into a single ordered list.
+  </Card>
+  <Card title="OWASP Top 10 analysis" icon="shield-halved" href="/security-analysis/owasp-scan">
+    Structured per-category scanning with confidence and evidence gates.
+  </Card>
+  <Card title="Bilingual guidance" icon="language">
+    Every finding carries English and Bahasa Indonesia titles, summaries, and remediation steps.
+  </Card>
+  <Card title="Multiple report formats" icon="file-export" href="/features/output-formats">
+    Markdown, HTML, JSON, SARIF, and PR/MR comments from the same findings.
+  </Card>
+  <Card title="AI assistant tools" icon="robot" href="/api-reference/introduction">
+    An MCP server exposing scan, OWASP scan, explain, fix, and SARIF tools.
+  </Card>
+</CardGroup>
+
+## Analysis pipeline
+
+Findings from every scanner pass through the same steps:
+
+<Steps>
+  <Step title="Normalize">
+    Each raw scanner result becomes a `NormalizedFinding` — one schema for severity, confidence, location, evidence, and classification.
+  </Step>
+  <Step title="Deduplicate">
+    Equivalent findings reported by multiple scanners collapse into one.
+  </Step>
+  <Step title="Map to OWASP">
+    Findings are tagged with their OWASP Top 10 category where determinable.
+  </Step>
+  <Step title="Prioritize">
+    The prioritizer scores risk and orders the list. Adapters never set priority.
+  </Step>
+  <Step title="Attach guidance">
+    Remediation, safe examples, and references are added — without inventing detection.
+  </Step>
+</Steps>
+
+## What stays out of the way
+
+AspidaSec includes history, telemetry, and a local dashboard, but they are secondary to the CLI report. The product never gates the golden path behind an account, a server, or a UI.
+
+<Card title="Trust model" icon="shield-check" href="/security-analysis/trust-model">
+  The single rule behind every feature: guidance may explain, never fabricate. Read how that constraint shapes the product.
+</Card>

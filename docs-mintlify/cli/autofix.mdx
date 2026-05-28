@@ -1,0 +1,56 @@
+---
+title: autofix
+description: "Apply safe automated remediation commands derived from scan findings."
+---
+
+```bash
+aspidasec autofix [options]
+```
+
+Runs the safe autofix commands suggested by scan findings — for example dependency upgrade commands for known advisories. Preview first with `--dry-run`.
+
+## Examples
+
+<CodeGroup>
+```bash Preview only
+aspidasec autofix --dry-run
+```
+
+```bash Apply safe fixes
+aspidasec autofix
+```
+
+```bash Include breaking fixes
+aspidasec autofix --include-breaking
+```
+</CodeGroup>
+
+## Options
+
+<ParamField path="--path <path>" type="string" default="cwd">
+  Repository path to operate on.
+</ParamField>
+
+<ParamField path="--dry-run" type="boolean" default="false">
+  Show fix commands without applying them.
+</ParamField>
+
+<ParamField path="--include-breaking" type="boolean" default="false">
+  Apply fixes flagged as potentially breaking.
+</ParamField>
+
+<ParamField path="-f, --format <format>" type="string" default="markdown">
+  Output format: `markdown` or `json`.
+</ParamField>
+
+<ParamField path="-c, --config <path>" type="string">
+  Path to the configuration file.
+</ParamField>
+
+<ParamField path="-v, --verbose" type="boolean" default="false">
+  Enable verbose output.
+</ParamField>
+
+<Warning>
+  Always run `--dry-run` first and review the commands. Breaking fixes can change dependency major versions — apply them only when you can test the result.
+</Warning>

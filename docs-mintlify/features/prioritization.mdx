@@ -1,0 +1,59 @@
+---
+title: Prioritization
+description: "How AspidaSec turns a pile of findings into an ordered, actionable list."
+---
+
+Detection is the easy part. The hard part is telling a developer *what to fix first*. AspidaSec scores every finding and presents the highest-risk issues at the top.
+
+## Scoring factors
+
+The prioritizer combines several signals into a single risk order:
+
+<CardGroup cols={2}>
+  <Card title="Severity" icon="triangle-exclamation">
+    Normalized severity from the originating scanner.
+  </Card>
+  <Card title="Confidence" icon="gauge">
+    How sure the scanner is that the finding is real.
+  </Card>
+  <Card title="Exploitability" icon="bug">
+    How readily the issue can be exploited in context.
+  </Card>
+  <Card title="Exposure" icon="globe">
+    Whether the affected surface is publicly reachable.
+  </Card>
+  <Card title="Affected location" icon="file-code">
+    The file, endpoint, or package the finding touches.
+  </Card>
+  <Card title="Fix availability" icon="wrench">
+    Whether a safe, known remediation exists.
+  </Card>
+</CardGroup>
+
+## Where it happens
+
+Prioritization lives in the analysis layer (`packages/prioritizer`). It is a hard boundary:
+
+<Note>
+  Scanner adapters never assign priority, and prioritization never fabricates evidence. The `prioritization` field on a finding is written only by the prioritizer.
+</Note>
+
+## Gates
+
+Two gates filter noise before prioritization presents results, especially in OWASP mode:
+
+| Gate | Effect |
+| --- | --- |
+| **Confidence gate** | Drops findings below the configured confidence level (`low`, `medium`, `high`). |
+| **Evidence gate** | Drops findings that lack scanner evidence. Enabled by default. |
+
+Configure them in `.aspidasec.yml` under `owasp`, or per run with `--confidence` and `--no-evidence-gate`.
+
+## Controlling output volume
+
+- `prioritization.maxFindingsInComment` caps how many findings appear in a PR/MR comment.
+- `prioritization.failOnSeverity` sets the threshold that makes the CLI exit `1` — useful for failing CI on critical or high findings.
+
+## Reading the order
+
+The top of the list is the intersection of *severe*, *confident*, *exploitable*, *exposed*, and *fixable*. A medium-severity issue on a public endpoint with a one-line fix can outrank a high-severity issue buried in dead code — which is exactly the point.

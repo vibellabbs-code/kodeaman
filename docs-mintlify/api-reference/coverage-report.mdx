@@ -1,0 +1,39 @@
+---
+title: aspidasec_coverage_report
+description: "Generate OWASP Top 10 coverage details for scanner coverage and findings."
+---
+
+Generates OWASP Top 10 coverage details for scanner coverage and optional findings — showing what was covered and what was not.
+
+## Parameters
+
+<ParamField body="scannerCoverage" type="string">
+  Stringified JSON array of `ScannerCoverage` objects.
+</ParamField>
+
+<ParamField body="findings" type="string">
+  Stringified JSON array of `NormalizedFinding` objects.
+</ParamField>
+
+<ParamField body="repoRoot" type="string">
+  Project root used to load config when `scannerCoverage` is omitted.
+</ParamField>
+
+## Returns
+
+A JSON coverage report showing OWASP category coverage and attack-surface coverage.
+
+## Example call
+
+```json
+{
+  "tool": "aspidasec_coverage_report",
+  "arguments": {
+    "repoRoot": "C:/Users/you/work/my-app"
+  }
+}
+```
+
+<Note>
+  Provide either `scannerCoverage` directly, or `repoRoot` so the tool can derive coverage from your configuration. This report is how AspidaSec stays honest about what ran — see the [trust model](/security-analysis/trust-model).
+</Note>

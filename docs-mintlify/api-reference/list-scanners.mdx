@@ -1,0 +1,34 @@
+---
+title: aspidasec_list_scanners
+description: "List supported scanners and whether each is installed and on PATH."
+---
+
+Lists supported scanners and whether each scanner is currently installed and available on `PATH`.
+
+## Parameters
+
+This tool takes no parameters.
+
+## Returns
+
+A JSON scanner list, where each entry includes:
+
+- `name` — scanner name.
+- `source` — finding source category.
+- `available` — whether it is installed and on `PATH`.
+- `version` and `path` where detectable.
+
+The response also includes a summary of available and missing scanners.
+
+## Example call
+
+```json
+{
+  "tool": "aspidasec_list_scanners",
+  "arguments": {}
+}
+```
+
+<Tip>
+  Use this to confirm which scanner engines will contribute findings before you scan, so missing coverage is no surprise.
+</Tip>

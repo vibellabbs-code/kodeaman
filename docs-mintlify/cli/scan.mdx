@@ -1,0 +1,71 @@
+---
+title: scan
+description: "Run a website security scan with the configured scanners."
+---
+
+```bash
+aspidasec scan [path-or-url] [options]
+```
+
+Runs the standard scan pipeline: collect evidence, normalize, deduplicate, prioritize, attach guidance, and render the chosen report. Accepts a local path, a checked-out project, or a deployed URL.
+
+## Examples
+
+<CodeGroup>
+```bash Local path
+aspidasec scan ./my-project
+```
+
+```bash Deployed URL
+aspidasec scan https://example.com
+```
+
+```bash JSON output
+aspidasec scan ./my-project --format json
+```
+
+```bash From existing scanner output
+aspidasec scan --input semgrep-results.json
+```
+
+```bash Framework preset
+aspidasec scan ./my-project --preset laravel
+```
+</CodeGroup>
+
+## Options
+
+<ParamField path="-c, --config <path>" type="string" default=".aspidasec.yml in cwd">
+  Path to the configuration file.
+</ParamField>
+
+<ParamField path="-f, --format <fmt>" type="string" default="markdown">
+  Output format: `markdown`, `json`, or `sarif`.
+</ParamField>
+
+<ParamField path="-i, --input <file>" type="string">
+  Use pre-existing scanner output (e.g. Semgrep or ZAP JSON) instead of running the tool.
+</ParamField>
+
+<ParamField path="-l, --language <lang>" type="string" default="from config">
+  Output language: `en` or `id`.
+</ParamField>
+
+<ParamField path="-p, --preset <name>" type="string">
+  Framework preset: `laravel`, `node-express`, or `wordpress`.
+</ParamField>
+
+<ParamField path="-v, --verbose" type="boolean" default="false">
+  Enable verbose output.
+</ParamField>
+
+## Exit codes
+
+| Code | Meaning |
+| --- | --- |
+| `0` | No findings at or above `failOnSeverity`. |
+| `1` | Findings at or above `failOnSeverity`, or a scan error. |
+
+<Tip>
+  For OWASP Top 10 structure with per-category evidence and gates, use [`owasp-scan`](/cli/owasp-scan) instead.
+</Tip>

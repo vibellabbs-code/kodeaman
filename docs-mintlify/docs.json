@@ -1,0 +1,183 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "AspidaSec",
+  "description": "CLI-first website security scanner with evidence-backed findings, OWASP Top 10 coverage, and practical remediation guidance.",
+  "colors": {
+    "primary": "#0D9488",
+    "light": "#2DD4BF",
+    "dark": "#0F766E"
+  },
+  "logo": {
+    "light": "/logo/light.svg",
+    "dark": "/logo/dark.svg",
+    "href": "/"
+  },
+  "favicon": "/favicon.svg",
+  "appearance": {
+    "default": "system"
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Documentation",
+        "groups": [
+          {
+            "group": "Get Started",
+            "pages": [
+              "index",
+              "get-started/introduction",
+              "get-started/quickstart",
+              "get-started/installation",
+              "get-started/configuration"
+            ]
+          },
+          {
+            "group": "Features",
+            "pages": [
+              "features/overview",
+              "features/scanners",
+              "features/prioritization",
+              "features/output-formats"
+            ]
+          },
+          {
+            "group": "Security Analysis",
+            "pages": [
+              "security-analysis/owasp-scan",
+              "security-analysis/trust-model"
+            ]
+          },
+          {
+            "group": "Concepts",
+            "pages": ["concepts/architecture"]
+          }
+        ]
+      },
+      {
+        "tab": "CLI Reference",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": ["cli/overview"]
+          },
+          {
+            "group": "Commands",
+            "pages": [
+              "cli/scan",
+              "cli/owasp-scan",
+              "cli/init",
+              "cli/autofix",
+              "cli/watch",
+              "cli/history",
+              "cli/rules",
+              "cli/dashboard"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
+        "groups": [
+          {
+            "group": "MCP API",
+            "pages": ["api-reference/introduction"]
+          },
+          {
+            "group": "Tools",
+            "pages": [
+              "api-reference/scan",
+              "api-reference/owasp-scan",
+              "api-reference/preflight",
+              "api-reference/list-scanners",
+              "api-reference/explain-finding",
+              "api-reference/suggest-fix",
+              "api-reference/convert-sarif",
+              "api-reference/coverage-report"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Integrations",
+        "groups": [
+          {
+            "group": "AI Assistants",
+            "pages": [
+              "integrations/mcp-overview",
+              "integrations/claude",
+              "integrations/cursor",
+              "integrations/vscode",
+              "integrations/windsurf"
+            ]
+          },
+          {
+            "group": "Documentation MCP",
+            "pages": ["integrations/docs-mcp"]
+          },
+          {
+            "group": "CI & Bots",
+            "pages": [
+              "integrations/github-actions",
+              "integrations/github-bot",
+              "integrations/gitlab-bot",
+              "integrations/self-hosting"
+            ]
+          },
+          {
+            "group": "IDE",
+            "pages": ["integrations/sarif-ide"]
+          },
+          {
+            "group": "Help",
+            "pages": ["troubleshooting"]
+          }
+        ]
+      }
+    ]
+  },
+  "navbar": {
+    "links": [
+      {
+        "label": "GitHub",
+        "href": "https://github.com/kaa911-syp/AspidaSec"
+      }
+    ],
+    "primary": {
+      "type": "button",
+      "label": "Get Started",
+      "href": "/get-started/quickstart"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/kaa911-syp/AspidaSec"
+    },
+    "links": [
+      {
+        "header": "Product",
+        "items": [
+          { "label": "Quickstart", "href": "/get-started/quickstart" },
+          { "label": "CLI Reference", "href": "/cli/overview" },
+          { "label": "MCP API", "href": "/api-reference/introduction" }
+        ]
+      },
+      {
+        "header": "Resources",
+        "items": [
+          { "label": "Integrations", "href": "/integrations/mcp-overview" },
+          { "label": "Troubleshooting", "href": "/troubleshooting" },
+          { "label": "GitHub", "href": "https://github.com/kaa911-syp/AspidaSec" }
+        ]
+      }
+    ]
+  },
+  "seo": {
+    "metatags": {
+      "og:title": "AspidaSec Documentation",
+      "og:description": "CLI-first website security scanner with evidence-backed OWASP findings and practical remediation guidance.",
+      "og:type": "website"
+    },
+    "indexing": "all"
+  }
+}

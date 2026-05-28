@@ -1,0 +1,59 @@
+﻿---
+title: Claude
+description: "Connect the AspidaSec MCP server to Claude Code and Claude Desktop."
+---
+
+Add the AspidaSec scan server to Claude so it can run scans and suggest fixes inline.
+
+## Claude Code
+
+Add the server to your Claude Code MCP configuration:
+
+```json
+{
+  "mcpServers": {
+    "aspidasec": {
+      "command": "npx",
+      "args": ["-y", "@aspidasec/mcp-server"]
+    }
+  }
+}
+```
+
+For local repository development, point Claude Code at the built package entrypoint:
+
+```json
+{
+  "mcpServers": {
+    "aspidasec": {
+      "command": "node",
+      "args": ["C:/path/to/AspidaSec/packages/mcp-server/dist/index.js"]
+    }
+  }
+}
+```
+
+<Tip>
+  You can also register the server from the command line:
+  ```bash
+  claude mcp add aspidasec -- npx -y @aspidasec/mcp-server
+  ```
+</Tip>
+
+## Claude Desktop
+
+Add the same `mcpServers` block to your Claude Desktop configuration file, then restart the app so the tool list refreshes.
+
+## Verify
+
+Ask Claude:
+
+```text
+Run AspidaSec preflight in English and tell me which scanners are missing.
+```
+
+Claude should call [`aspidasec_preflight`](/api-reference/preflight) and report scanner availability. If the tools do not appear, see [Troubleshooting](/troubleshooting).
+
+<Note>
+  Scan tools require absolute `repoRoot` paths. Ask Claude to scan a full path, e.g. `C:/Users/you/work/my-app`.
+</Note>

@@ -1,0 +1,87 @@
+---
+title: Architecture
+description: "Four product layers with strict boundaries: scanner, analysis, guidance, output."
+---
+
+AspidaSec is built around four layers. Each has one responsibility, and the boundaries between them are enforced. This prevents the codebase from collapsing into a pile of scanner-specific special cases.
+
+## Data flow
+
+```text
+Input target
+  → Scanner Layer     collect raw evidence
+  → Analysis Layer    normalize, dedupe, map, prioritize
+  → Guidance Layer    explain and remediate (never invent)
+  → Output Layer      render reports
+  → Developer / CI / PR / AI assistant
+```
+
+## The layers
+
+<AccordionGroup>
+  <Accordion title="Scanner Layer — collect evidence" icon="radar">
+    Runs scanner integrations, captures raw output, preserves file paths, endpoints, packages, and reproduction context, and reports failures honestly. No business logic beyond adapter-specific parsing.
+
+    Packages: `adapters-*`, `owasp`, `cli`.
+  </Accordion>
+  <Accordion title="Analysis Layer — make decisions" icon="brain">
+    Normalizes findings into one schema, deduplicates, maps to OWASP, normalizes severity and confidence, scores risk, and decides ordering — while preserving enough evidence for review.
+
+    Packages: `schema`, `core`, `config`, `prioritizer`, `owasp`.
+  </Accordion>
+  <Accordion title="Guidance Layer — help developers act" icon="lightbulb">
+    Summarizes, explains impact, provides remediation and safe examples, and localizes to English/Bahasa Indonesia. It explains findings; it never creates them.
+
+    Packages: `coaching`, `i18n`, `lessons`, `mcp-server`.
+  </Accordion>
+  <Accordion title="Output Layer — make results usable" icon="file-export">
+    Renders CLI summaries, HTML reports, Markdown/PR comments, JSON, and SARIF — readable, prioritized, evidence-backed.
+
+    Packages: `output-markdown`, `output-html`, `output-sarif`, `cli`, `bot-github`, `bot-gitlab`, `bot-gitea`, `mcp-server`.
+  </Accordion>
+</AccordionGroup>
+
+## The scan pipeline
+
+`ScanPipeline` (in `packages/core`) ties the layers together:
+
+<Steps>
+  <Step title="Run adapters">
+    Each registered `ScannerAdapter` runs sequentially.
+  </Step>
+  <Step title="Deduplicate">
+    Equivalent findings collapse (`dedup.ts`).
+  </Step>
+  <Step title="Score and sort">
+    The `Prioritizer` orders findings by risk.
+  </Step>
+  <Step title="Summarize">
+    A summary and `CoverageReport` are built.
+  </Step>
+  <Step title="Run plugin hooks">
+    Plugin `afterScan` hooks fire. The plugin system supports `beforeScan`, `afterScan`, and `onAdapterRegistered`.
+  </Step>
+</Steps>
+
+## The central data contract
+
+Every scanner produces `NormalizedFinding[]`, defined only in `packages/schema`. Key sub-fields:
+
+| Field | Owner | Purpose |
+| --- | --- | --- |
+| `prioritization` | Prioritizer | Risk factors — never set by adapters |
+| `coaching` | Guidance layer | Bilingual titles, summaries, remediation |
+| `evidence` | Scanner layer | Required proof; never fabricated |
+| `raw` | Scanner layer | Reference to original tool output |
+
+## Boundary rules
+
+- Scanner adapters do not decide product priority.
+- Prioritization does not fabricate evidence.
+- Guidance does not invent findings.
+- Output renderers do not change finding meaning.
+- CI integrations preserve the same semantics as the local CLI.
+
+## Architecture smells
+
+Stop and refactor when a scanner adapter knows about HTML layout, an output renderer recalculates severity, AI text writes new finding IDs, config parsing leaks into scanner code, or PR bot behavior diverges from the CLI.

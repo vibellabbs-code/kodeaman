@@ -1,0 +1,58 @@
+---
+title: GitHub Actions
+description: "Run AspidaSec in CI and upload SARIF to GitHub Code Scanning."
+---
+
+Add AspidaSec to a GitHub Actions workflow to scan on every push and pull request, then surface findings as Code Scanning alerts.
+
+## Workflow
+
+```yaml .github/workflows/aspidasec.yml
+name: AspidaSec Security Scan
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  security-events: write
+
+jobs:
+  aspidasec:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install AspidaSec
+        run: npm install --global aspidasec
+
+      - name: Run AspidaSec SARIF scan
+        run: aspidasec scan --format sarif --output aspidasec-results.sarif .
+
+      - name: Upload SARIF to GitHub Code Scanning
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: aspidasec-results.sarif
+```
+
+## Notes
+
+- The `security-events: write` permission is required to upload SARIF.
+- Findings at or above `failOnSeverity` make the CLI exit `1`, failing the job — tune the threshold in `.aspidasec.yml`.
+- Install any scanners you depend on as additional steps (e.g. `pip install semgrep`); missing scanners are reported as skipped, not failed.
+
+<Warning>
+  If your job uses the [MCP server](/integrations/mcp-overview) instead of the CLI, make sure the automation writes the tool response as **raw JSON/SARIF** with no Markdown fences or assistant commentary, or the upload will fail to parse.
+</Warning>
+
+<Card title="SARIF & IDE integration" icon="code-branch" href="/integrations/sarif-ide">
+  More on producing and consuming SARIF.
+</Card>

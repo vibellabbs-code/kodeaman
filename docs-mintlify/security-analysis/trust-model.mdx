@@ -1,0 +1,87 @@
+---
+title: Trust Model
+description: "The single rule behind every AspidaSec feature: guidance may explain, never invent."
+---
+
+AspidaSec is a security product. Trust matters more than clever output. One rule governs everything:
+
+<Note>
+  **AI and generated guidance must never invent findings.**
+</Note>
+
+## Detection sources
+
+A finding may only exist if it comes from one of these sources:
+
+- Scanner output
+- Repository analysis
+- Dependency audit data
+- Configuration review
+- Dynamic scan evidence
+- User-provided evidence
+- Deterministic rules maintained in the codebase
+
+## What guidance *may* do
+
+The guidance layer is allowed to make findings easier to act on:
+
+<CardGroup cols={2}>
+  <Card title="Summarize" icon="align-left">
+    Restate a scanner-backed finding in clear language.
+  </Card>
+  <Card title="Explain impact" icon="circle-info">
+    Describe what the issue means in context.
+  </Card>
+  <Card title="Translate" icon="language">
+    Localize guidance to English or Bahasa Indonesia.
+  </Card>
+  <Card title="Suggest fixes" icon="wrench">
+    Propose remediation steps and safe code examples.
+  </Card>
+</CardGroup>
+
+## What guidance must *never* do
+
+The guidance layer must not invent any of the following:
+
+| Forbidden | Forbidden | Forbidden |
+| --- | --- | --- |
+| Vulnerabilities | Affected files | Affected endpoints |
+| HTTP requests/responses | Stack traces | Scanner names |
+| Severity | Confidence | CWE IDs |
+| OWASP categories | Exploitability | Evidence artifacts |
+
+## Failure handling
+
+If a scanner fails, AspidaSec says so. It does not replace missing output with generated findings.
+
+<CodeGroup>
+```text Acceptable
+ZAP did not run because Docker was unavailable.
+npm audit was skipped: no supported lockfile found.
+Finding filtered by the evidence gate: no evidence.
+```
+
+```text Unacceptable
+(Inventing a dynamic finding because ZAP was unavailable.)
+(Assigning an endpoint that was never observed.)
+(Reporting a vulnerability only because it "sounds likely".)
+```
+</CodeGroup>
+
+## Report language
+
+A trustworthy report distinguishes between:
+
+- **Confirmed** scanner evidence
+- **Inferred** prioritization
+- **Suggested** remediation
+- **Missing** or unavailable evidence
+
+Suggestions are never presented as detection proof.
+
+## The user trust contract
+
+AspidaSec earns trust by being explicit about what was scanned, which scanners ran, which were skipped or failed, what evidence backs each top finding, and what remains unverified.
+
+> Trustworthy limits are better than confident guesses.

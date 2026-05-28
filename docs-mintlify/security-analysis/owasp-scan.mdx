@@ -1,0 +1,88 @@
+﻿---
+title: OWASP Top 10 Scanning
+description: "Run structured, category-by-category OWASP analysis with evidence and confidence gates."
+---
+
+The `owasp-scan` command runs a structured scan mapped to the OWASP Top 10. Instead of a flat finding list, it organizes evidence by category (A01–A10) and applies confidence and evidence gates so only well-supported findings surface.
+
+## Run a scan
+
+<CodeGroup>
+```bash Full scan (HTML)
+aspidasec owasp-scan
+```
+
+```bash Specific categories
+aspidasec owasp-scan --categories A01,A03,A06
+```
+
+```bash High confidence only
+aspidasec owasp-scan --confidence high
+```
+
+```bash Parallel + Markdown (id)
+aspidasec owasp-scan --parallel --format markdown --language id
+```
+</CodeGroup>
+
+By default it writes an HTML evidence report to `aspidasec-owasp-report.html`.
+
+## What you get
+
+- An HTML evidence report (default), or Markdown/JSON with `--format`.
+- A coverage dashboard showing findings per OWASP category.
+- Evidence-backed findings only — nothing AI-fabricated.
+
+## The OWASP categories
+
+| Code | Category |
+| --- | --- |
+| A01 | Broken Access Control |
+| A02 | Cryptographic Failures |
+| A03 | Injection |
+| A04 | Insecure Design |
+| A05 | Security Misconfiguration |
+| A06 | Vulnerable and Outdated Components |
+| A07 | Identification and Authentication Failures |
+| A08 | Software and Data Integrity Failures |
+| A09 | Security Logging and Monitoring Failures |
+| A10 | Server-Side Request Forgery (SSRF) |
+
+## How orchestration works
+
+The orchestrator (`packages/owasp`) runs per-category scans, applies the confidence and evidence gates, maps findings to their OWASP category, and returns an `OwaspScanReport`. Environment detection handles WSL versus native execution, and a false-positive filter trims known noise.
+
+## Gates
+
+<AccordionGroup>
+  <Accordion title="Confidence gate" icon="gauge">
+    Drops findings below the configured confidence (`--confidence low|medium|high`, default `low`). Raise it to reduce noise at the cost of recall.
+  </Accordion>
+  <Accordion title="Evidence gate" icon="fingerprint">
+    Requires scanner evidence for every finding. On by default. Disable with `--no-evidence-gate` only when you explicitly want to see unverified results.
+  </Accordion>
+</AccordionGroup>
+
+## Enable OWASP mode in bots
+
+Set `owasp.enabled: true` in `.aspidasec.yml` and the GitHub/GitLab bots switch from the standard pipeline to the OWASP orchestrator, posting comments organized by category with evidence cards.
+
+```yaml
+owasp:
+  enabled: true
+  categories: [A01, A03, A06, A07]
+  confidenceGate: medium
+  evidenceGate: true
+  failOnSeverity: high
+```
+
+## Reference
+
+<CardGroup cols={2}>
+  <Card title="owasp-scan CLI flags" icon="terminal" href="/cli/owasp-scan">
+    Full option list and defaults.
+  </Card>
+  <Card title="MCP owasp_scan tool" icon="robot" href="/api-reference/owasp-scan">
+    Run the same scan from an AI assistant.
+  </Card>
+</CardGroup>

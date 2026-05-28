@@ -1,0 +1,46 @@
+---
+title: rules
+description: "List and validate custom AspidaSec security rules."
+---
+
+```bash
+aspidasec rules <subcommand> [options]
+```
+
+Manages custom security rules loaded from config and `.yml` rule files, letting you extend detection without modifying the codebase.
+
+## Subcommands
+
+### list
+
+List all custom rules loaded from config and rule files.
+
+```bash
+aspidasec rules list --rules-dir ./security-rules
+```
+
+<ParamField path="-c, --config <path>" type="string">
+  Path to the configuration file.
+</ParamField>
+<ParamField path="--rules-dir <path>" type="string">
+  Directory containing `.yml` custom rules.
+</ParamField>
+
+### validate
+
+Validate custom rule files and inline config rules before relying on them.
+
+```bash
+aspidasec rules validate --rules-dir ./security-rules
+```
+
+<ParamField path="-c, --config <path>" type="string">
+  Path to the configuration file.
+</ParamField>
+<ParamField path="--rules-dir <path>" type="string">
+  Directory containing `.yml` custom rules.
+</ParamField>
+
+<Tip>
+  Run `rules validate` in CI to catch malformed rule files before they silently fail to load during a scan.
+</Tip>

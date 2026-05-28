@@ -1,0 +1,109 @@
+---
+title: GitLab Bot
+description: "Automatically review merge requests with prioritized security findings."
+---
+
+The GitLab bot (`@aspidasec/bot-gitlab`) reviews merge requests using a Hono-based webhook service. When an MR is opened or updated, it runs the configured scanners and posts a note with prioritized findings and remediation.
+
+## Prerequisites
+
+- A GitLab project/group with webhook access.
+- A personal or project access token with `api` scope.
+- Node.js 18+.
+- Docker (recommended) or a Node.js host.
+- At least one scanner installed in the bot's runtime.
+
+## 1. Create an access token
+
+**Settings → Access Tokens** (project or group). Scope: `api`. Set a reasonable expiry and rotate regularly.
+
+## 2. Configure environment
+
+```bash .env
+# Required
+GITLAB_TOKEN=glpat-xxxxxxxxxxxxxxxxxxxx
+GITLAB_WEBHOOK_SECRET=your-webhook-secret
+
+# Optional
+GITLAB_URL=https://gitlab.com   # self-hosted GitLab URL
+LOG_LEVEL=info
+PORT=3001
+```
+
+<Warning>
+  Treat `GITLAB_TOKEN` and `GITLAB_WEBHOOK_SECRET` as secrets — store them in env vars or a secrets manager, never in tracked files. Rotate the token on a schedule.
+</Warning>
+
+## 3. Configure `.aspidasec.yml`
+
+```yaml
+language: id
+
+scanners:
+  semgrep: true
+  zapBaseline: false
+  npmAudit: true
+
+prioritization:
+  maxFindingsInComment: 3
+  failOnSeverity: high
+
+output:
+  markdown: true
+```
+
+OWASP mode works the same as the GitHub bot — set `owasp.enabled: true`.
+
+## 4. Set up the webhook
+
+<Steps>
+  <Step title="Open webhook settings">
+    **Settings → Webhooks** in your GitLab project.
+  </Step>
+  <Step title="Add the webhook">
+    URL: `http://your-host:3001/api/gitlab/webhooks`. Secret token: same as `GITLAB_WEBHOOK_SECRET`.
+  </Step>
+  <Step title="Select triggers">
+    Enable **Merge request events**, then add the webhook.
+  </Step>
+</Steps>
+
+## 5. Deploy
+
+<CodeGroup>
+```bash Docker Compose (recommended)
+docker compose up -d bot-gitlab
+```
+
+```bash Direct Node.js
+pnpm install
+pnpm build
+cd apps/bot-gitlab
+node dist/index.js
+```
+</CodeGroup>
+
+## 6. Verify
+
+Open an MR. Within 30–60 seconds the bot posts a note with a scan summary, top findings, bilingual guidance, and an OWASP dashboard if enabled. Subsequent pushes update the same note.
+
+## Self-hosted GitLab
+
+Set `GITLAB_URL` to your instance so the bot calls the right API:
+
+```bash
+GITLAB_URL=https://gitlab.yourcompany.com
+```
+
+## Troubleshooting
+
+| Issue | Solution |
+| --- | --- |
+| No response to MRs | Check **Settings → Webhooks → Recent Deliveries**. |
+| `401 Unauthorized` | Verify the token has `api` scope and is not expired. |
+| Empty comment | Verify scanners are installed in the bot runtime. |
+| Duplicate notes | The bot updates via a hidden marker; check for multiple instances. |
+
+<Card title="Self-hosting & deployment" icon="server" href="/integrations/self-hosting">
+  Production Docker Compose setup for both bots.
+</Card>

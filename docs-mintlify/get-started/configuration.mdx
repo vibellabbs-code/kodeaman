@@ -1,0 +1,87 @@
+---
+title: Configuration
+description: "Control scanners, gates, output, and language with .aspidasec.yml."
+---
+
+AspidaSec reads `.aspidasec.yml` from the root of the project being scanned. Generate one with [`aspidasec init`](/cli/init), or write it by hand. Every key is optional — sensible defaults apply.
+
+## Full example
+
+```yaml .aspidasec.yml
+language: id            # en | id
+
+scanners:
+  semgrep: true
+  npmAudit: true
+  zapBaseline: false
+  # zapTargetUrl: "https://staging.example.com"
+
+presets:
+  - laravel             # laravel | node-express | wordpress
+
+prioritization:
+  maxFindingsInComment: 3
+  failOnSeverity: critical   # critical | high | medium | low
+
+output:
+  markdown: true
+  html: false
+  sarif: false
+  json: false
+
+owasp:
+  enabled: false
+  categories: [A01, A02, A03, A04, A05, A06, A07, A08, A09, A10]
+  parallel: false
+  confidenceGate: low        # low | medium | high
+  evidenceGate: true
+  failOnSeverity: high
+
+gamification:
+  enabled: true
+
+environment:
+  skipWslCheck: false
+  scannerTimeout: 120000
+```
+
+## Sections
+
+<AccordionGroup>
+  <Accordion title="language" icon="language">
+    Output language for findings and guidance: `en` (English) or `id` (Bahasa Indonesia). Every finding carries both languages internally; this selects which is shown. Override per run with `--language`.
+  </Accordion>
+  <Accordion title="scanners" icon="radar">
+    Toggle each scanner engine. A scanner set to `true` but not installed is skipped and reported in the coverage report — it never fabricates results. `zapTargetUrl` sets the dynamic scan target for ZAP.
+  </Accordion>
+  <Accordion title="presets" icon="layer-group">
+    Framework presets tune rules and expectations for a stack: `laravel`, `node-express`, or `wordpress`. Override per run with `--preset`.
+  </Accordion>
+  <Accordion title="prioritization" icon="list-ordered">
+    `maxFindingsInComment` caps how many findings appear in a PR/MR comment. `failOnSeverity` sets the threshold that makes the CLI exit with code `1`.
+  </Accordion>
+  <Accordion title="output" icon="file-export">
+    Enable report formats: `markdown`, `html`, `sarif`, `json`. The active format can also be selected per run with `--format`.
+  </Accordion>
+  <Accordion title="owasp" icon="shield-halved">
+    Controls the structured OWASP Top 10 scan. `categories` selects which of A01–A10 to run. `confidenceGate` and `evidenceGate` filter low-quality results; `parallel` runs categories concurrently. See [OWASP scanning](/security-analysis/owasp-scan).
+  </Accordion>
+  <Accordion title="environment" icon="gear">
+    `skipWslCheck` bypasses the Windows WSL availability check. `scannerTimeout` is the per-scanner timeout in milliseconds.
+  </Accordion>
+</AccordionGroup>
+
+## Annotated templates
+
+The repository ships ready-to-copy configs in [`examples/configs/`](https://github.com/kaa911-syp/AspidaSec/tree/main/examples/configs):
+
+| Template | Use case |
+| --- | --- |
+| `cli-local.yml` | Local developer scanning |
+| `github-bot.yml` | GitHub PR review bot |
+| `gitlab-bot.yml` | GitLab MR review bot |
+| `owasp-mode.yml` | Structured OWASP Top 10 mode |
+
+## Precedence
+
+CLI flags override config file values, which override built-in defaults. For example, `--language en` wins over `language: id` in the file.

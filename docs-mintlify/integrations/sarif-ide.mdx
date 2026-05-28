@@ -1,0 +1,106 @@
+﻿---
+title: SARIF & IDE Integration
+description: "Produce SARIF v2.1.0 and review it in VS Code, JetBrains, and GitHub Code Scanning."
+---
+
+SARIF (Static Analysis Results Interchange Format) is a JSON format for static-analysis results. AspidaSec emits SARIF v2.1.0 so findings can be reviewed in IDEs, uploaded to GitHub Code Scanning, or consumed by other SARIF-compatible tools.
+
+The normalized AspidaSec findings remain the source data; SARIF is the portable representation.
+
+## Producing SARIF
+
+Two paths, both yielding raw SARIF JSON:
+
+<CodeGroup>
+```bash CLI
+aspidasec scan --format sarif --output aspidasec-results.sarif .
+```
+
+```json MCP: scan + export in one step
+{
+  "tool": "aspidasec_scan",
+  "arguments": {
+    "repoRoot": "C:/Users/you/work/my-app",
+    "format": "sarif",
+    "language": "en"
+  }
+}
+```
+
+```json MCP: convert existing findings
+{
+  "tool": "aspidasec_convert_sarif",
+  "arguments": {
+    "findings": "[{...stringified NormalizedFinding...}]"
+  }
+}
+```
+</CodeGroup>
+
+Save the result as `aspidasec-results.sarif` or `aspidasec-results.sarif.json` before loading it.
+
+## VS Code
+
+<Steps>
+  <Step title="Install a SARIF viewer">
+    Install **SARIF Viewer** from the Marketplace.
+  </Step>
+  <Step title="Generate and save">
+    Produce SARIF and save it in or near the scanned workspace.
+  </Step>
+  <Step title="Open the workspace">
+    Open the same checkout you scanned.
+  </Step>
+  <Step title="Import the SARIF file">
+    Use the viewer's import command. Findings appear at their source locations.
+  </Step>
+</Steps>
+
+## JetBrains IDEs
+
+JetBrains support SARIF through built-in inspections or plugins, depending on the product:
+
+<Steps>
+  <Step title="Generate SARIF">
+    Produce `aspidasec-results.sarif`.
+  </Step>
+  <Step title="Open the project">
+    Open the scanned project in the IDE.
+  </Step>
+  <Step title="Import">
+    Use the IDE's SARIF import action or a SARIF plugin, then review results in the Problems / Security tool window.
+  </Step>
+</Steps>
+
+If your IDE has no SARIF import, use GitHub Code Scanning as the review surface instead.
+
+## GitHub Code Scanning
+
+Upload SARIF in CI — see the full workflow on the [GitHub Actions](/integrations/github-actions) page. The key requirements: `security-events: write` permission and a valid SARIF file path.
+
+## Choosing the right path
+
+| Scenario | Path |
+| --- | --- |
+| One assistant call to scan and export | [`aspidasec_scan`](/api-reference/scan) with `format: "sarif"` |
+| You already have JSON findings | [`aspidasec_convert_sarif`](/api-reference/convert-sarif) |
+| OWASP evidence + SARIF | [`aspidasec_owasp_scan`](/api-reference/owasp-scan) with `format: "sarif"` |
+| Code Scanning alerts | Save SARIF in CI, upload with `github/codeql-action/upload-sarif` |
+| Local IDE navigation | Save SARIF locally, import into VS Code / JetBrains |
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="File opens but no results appear">
+    Confirm the file contains only SARIF JSON. Remove any Markdown fences an assistant added. Use a `.sarif` or `.sarif.json` extension.
+  </Accordion>
+  <Accordion title="Results don't map to source files">
+    Generate SARIF from the same checkout you open in the IDE, and keep it associated with the repository root. Don't move source files between scanning and importing.
+  </Accordion>
+  <Accordion title="GitHub upload fails">
+    Ensure `security-events: write`, confirm the SARIF path passed to `sarif_file` exists, and check the file is not wrapped in assistant text or logs.
+  </Accordion>
+  <Accordion title="MCP conversion fails">
+    Pass `findings` as a stringified JSON array — extract the `findings` field from the scan response first. Resolve any scan error before converting.
+  </Accordion>
+</AccordionGroup>

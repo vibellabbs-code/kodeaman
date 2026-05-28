@@ -1,0 +1,58 @@
+﻿---
+title: Scanners
+description: "The scanner engines AspidaSec orchestrates and how their output is unified."
+---
+
+AspidaSec does not reimplement vulnerability detection. It runs established scanners, captures their raw output, and maps each result into a single `NormalizedFinding` schema. This keeps detection trustworthy and AspidaSec focused on prioritization and guidance.
+
+## Supported scanners
+
+| Scanner | Type | Coverage |
+| --- | --- | --- |
+| **Semgrep** | SAST | Static web application rules |
+| **OWASP ZAP** | DAST | Dynamic checks against a running site (baseline + full) |
+| **npm audit** | Dependencies | npm / pnpm / yarn advisory data |
+| **Bandit** | SAST | Python source analysis |
+| **gosec** | SAST | Go source analysis |
+| **cargo-audit** | Dependencies | Rust crate advisories |
+| **SpotBugs** | SAST | Java / JVM bytecode analysis |
+| **Playwright** | Crawl | Route discovery and browser-context checks |
+
+## How an adapter works
+
+Each scanner integration lives in its own package (`packages/adapters-*`) and has three parts:
+
+<Steps>
+  <Step title="adapter.ts">
+    Executes the external tool and captures stdout/stderr.
+  </Step>
+  <Step title="mapper.ts">
+    Translates raw tool output into `NormalizedFinding[]`.
+  </Step>
+  <Step title="types.ts">
+    Types the raw tool output so parsing stays type-safe.
+  </Step>
+</Steps>
+
+## Graceful skipping
+
+If a scanner's external tool is missing, the adapter is **skipped** — it does not emit findings. The skip is recorded in the [coverage report](/api-reference/coverage-report) so you always know what ran and what did not.
+
+<Warning>
+  This behavior is core to the [trust model](/security-analysis/trust-model). A missing scanner produces an honest "skipped" entry, never a guessed finding.
+</Warning>
+
+## Evidence requirement
+
+Every finding must trace back to real scanner output stored in its `evidence` block. Adapters collect evidence; they do not assign severity, confidence, or OWASP category as product decisions — that happens in the analysis layer.
+
+## Reusing existing scanner output
+
+Already have Semgrep or ZAP JSON? Feed it directly instead of re-running the tool:
+
+```bash
+aspidasec scan --input semgrep-results.json
+aspidasec scan --input zap-baseline.json
+```
+
+This is useful in CI where the scanner already runs as a separate step.

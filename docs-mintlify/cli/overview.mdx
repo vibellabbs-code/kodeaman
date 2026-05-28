@@ -1,0 +1,71 @@
+---
+title: CLI Overview
+description: "Every AspidaSec command, how to invoke it, and shared conventions."
+---
+
+The CLI (`apps/cli`) is the primary entry point. It wires every product layer together through `commander` commands.
+
+## Invoking the CLI
+
+During local development, run through pnpm from the repo root:
+
+```bash
+pnpm --filter @aspidasec/cli start -- <command> [options]
+```
+
+Where a global binary named `aspidasec` is installed, the same commands apply directly:
+
+```bash
+aspidasec <command> [options]
+```
+
+<Note>
+  Docs below show the `aspidasec <command>` form for brevity. Substitute the `pnpm --filter @aspidasec/cli start --` prefix when running from a source checkout.
+</Note>
+
+## Commands
+
+<CardGroup cols={2}>
+  <Card title="scan" icon="magnifying-glass" href="/cli/scan">
+    Run a website security scan on a path or URL.
+  </Card>
+  <Card title="owasp-scan" icon="shield-halved" href="/cli/owasp-scan">
+    Run a structured OWASP Top 10 scan.
+  </Card>
+  <Card title="init" icon="wand-magic-sparkles" href="/cli/init">
+    Generate `.aspidasec.yml` interactively.
+  </Card>
+  <Card title="autofix" icon="wrench" href="/cli/autofix">
+    Apply safe automated fixes from findings.
+  </Card>
+  <Card title="watch" icon="eye" href="/cli/watch">
+    Re-scan automatically when files change.
+  </Card>
+  <Card title="history" icon="clock-rotate-left" href="/cli/history">
+    Show scan history, trends, and exports.
+  </Card>
+  <Card title="rules" icon="list-check" href="/cli/rules">
+    List and validate custom security rules.
+  </Card>
+  <Card title="dashboard" icon="chart-line" href="/cli/dashboard">
+    Serve a local security trends dashboard.
+  </Card>
+</CardGroup>
+
+## Shared conventions
+
+| Convention | Detail |
+| --- | --- |
+| Config file | `.aspidasec.yml` in the working directory, override with `-c, --config`. |
+| Language | `-l, --language en\|id`, defaults to the config value. |
+| Format | `-f, --format`, accepted values vary per command. |
+| Verbose | `-v, --verbose` enables detailed output where supported. |
+
+## Exit codes
+
+| Code | Meaning |
+| --- | --- |
+| `0` | Scan completed; no findings at or above `failOnSeverity`. |
+| `1` | Findings at or above `failOnSeverity`, or a scan error. |
+
+These codes make AspidaSec safe to gate CI on — fail the build only when findings cross your configured threshold.

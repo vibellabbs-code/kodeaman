@@ -1,0 +1,40 @@
+﻿---
+title: Cursor
+description: "Connect the AspidaSec MCP server to Cursor."
+---
+
+Add a `.cursor/mcp.json` file to your workspace, or configure the server globally in Cursor settings.
+
+## Workspace configuration
+
+```json .cursor/mcp.json
+{
+  "mcpServers": {
+    "aspidasec": {
+      "command": "npx",
+      "args": ["-y", "@aspidasec/mcp-server"]
+    }
+  }
+}
+```
+
+## Local build
+
+```json .cursor/mcp.json
+{
+  "mcpServers": {
+    "aspidasec": {
+      "command": "node",
+      "args": ["C:/path/to/AspidaSec/packages/mcp-server/dist/index.js"]
+    }
+  }
+}
+```
+
+<Warning>
+  Restart Cursor after changing MCP configuration so the tool list is refreshed.
+</Warning>
+
+## Verify
+
+In Cursor's chat, ask it to *"list the AspidaSec scanners available on this machine."* It should call [`aspidasec_list_scanners`](/api-reference/list-scanners). If tools are missing, confirm the server name is unique and check Cursor's MCP logs — see [Troubleshooting](/troubleshooting).

@@ -1,0 +1,35 @@
+---
+title: aspidasec_preflight
+description: "Check whether the environment is ready to run AspidaSec scanners."
+---
+
+Checks whether the environment is ready for scanning. Detects platform, WSL status on Windows, scanner availability, warnings, and install instructions. Run this first when you are unsure a machine is ready.
+
+## Parameters
+
+<ParamField body="language" type="string">
+  Output language: `en` or `id`.
+</ParamField>
+
+## Returns
+
+A JSON readiness report containing:
+
+- `canRun` — whether scans can run.
+- Environment details (platform, WSL).
+- Scanner status and missing scanners.
+- Warnings and install instructions.
+- Windows WSL details where applicable.
+
+## Example call
+
+```json
+{
+  "tool": "aspidasec_preflight",
+  "arguments": { "language": "en" }
+}
+```
+
+<Tip>
+  Use the result to install missing scanner dependencies before a full scan. On Windows, the response reports WSL availability and install steps when WSL is missing.
+</Tip>

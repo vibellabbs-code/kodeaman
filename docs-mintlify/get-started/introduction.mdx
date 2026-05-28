@@ -1,0 +1,62 @@
+---
+title: Introduction
+description: "What AspidaSec is, who it serves, and the problems it set out to solve."
+---
+
+AspidaSec is a **CLI-first website security scanner** for developers and small teams. It runs established security tools, normalizes their output into one schema, prioritizes the risks that matter, and delivers practical remediation guidance in English and Bahasa Indonesia.
+
+## What it answers
+
+A scan is designed to answer five questions a developer actually has:
+
+<CardGroup cols={2}>
+  <Card title="What is at risk?" icon="magnifying-glass">
+    Which security risks are present in this web application.
+  </Card>
+  <Card title="What first?" icon="list-ordered">
+    Which findings to fix first, by prioritized risk.
+  </Card>
+  <Card title="Is it real?" icon="fingerprint">
+    What evidence proves the issue exists.
+  </Card>
+  <Card title="How to fix?" icon="wrench">
+    How to remediate it safely, with examples.
+  </Card>
+</CardGroup>
+
+The fifth — *how do we share the result?* — is answered by CI-ready reports, PR/MR comments, and SARIF output.
+
+## Who it is for
+
+- Developers maintaining public-facing websites and web apps.
+- Small product teams that need practical OWASP coverage without a dedicated security team.
+- Agencies and maintainers who need shareable security reports for client or team review.
+- CI users who want security output readable enough to act on.
+
+## What it is *not*
+
+AspidaSec is deliberately scoped. It is **not** a hosted dashboard product, a multi-tenant backend, a gamification platform, an attack-simulation lab, or a universal scanner. Dashboard and history code exist in the repository, but the product story stays CLI-first and report-first.
+
+<Note>
+  This focus is a feature. A narrow, excellent golden path delivers value before any dashboard exists. See the [Architecture](/concepts/architecture) page for how the layers stay clean.
+</Note>
+
+## How the product is layered
+
+| Layer | Responsibility |
+| --- | --- |
+| **Scanner** | Run security scanners and collect raw evidence. |
+| **Analysis** | Normalize, deduplicate, map to OWASP, and prioritize. |
+| **Guidance** | Explain findings and produce remediation — never invent them. |
+| **Output** | Render reports for developers, CI, IDEs, and AI assistants. |
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/get-started/quickstart">
+    Your first scan in five minutes.
+  </Card>
+  <Card title="Installation" icon="download" href="/get-started/installation">
+    Set up AspidaSec and scanners.
+  </Card>
+</CardGroup>

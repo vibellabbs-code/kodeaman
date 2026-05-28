@@ -1,0 +1,64 @@
+﻿---
+title: MCP API Introduction
+description: "AspidaSec's programmatic interface is its MCP server — eight tools for AI assistants."
+---
+
+<Info>
+  **AspidaSec exposes no public HTTP REST API.** Its programmatic surface is the **MCP server** (for AI assistants) and the **CLI** (for humans and CI). This section documents the MCP tools. Because there is no REST service, there is no OpenAPI specification to publish — generating one would mean inventing endpoints that do not exist, which the [trust model](/security-analysis/trust-model) forbids.
+</Info>
+
+## What the MCP server is
+
+The package `@aspidasec/mcp-server` ships an executable, `aspidasec-mcp`, that starts a **stdio** MCP server named `aspidasec`. It lets AI coding assistants run scans, inspect findings, and request remediation without leaving the assistant.
+
+## The eight tools
+
+<CardGroup cols={2}>
+  <Card title="aspidasec_scan" icon="magnifying-glass" href="/api-reference/scan">
+    Run the standard scan pipeline; return prioritized findings.
+  </Card>
+  <Card title="aspidasec_owasp_scan" icon="shield-halved" href="/api-reference/owasp-scan">
+    Run an OWASP Top 10 scan with per-category evidence.
+  </Card>
+  <Card title="aspidasec_preflight" icon="clipboard-check" href="/api-reference/preflight">
+    Check whether the environment is ready to scan.
+  </Card>
+  <Card title="aspidasec_list_scanners" icon="list" href="/api-reference/list-scanners">
+    List supported scanners and their availability.
+  </Card>
+  <Card title="aspidasec_explain_finding" icon="circle-info" href="/api-reference/explain-finding">
+    Explain a finding with bilingual guidance.
+  </Card>
+  <Card title="aspidasec_suggest_fix" icon="wrench" href="/api-reference/suggest-fix">
+    Return actionable remediation and commands.
+  </Card>
+  <Card title="aspidasec_convert_sarif" icon="code-branch" href="/api-reference/convert-sarif">
+    Convert findings to SARIF v2.1.0.
+  </Card>
+  <Card title="aspidasec_coverage_report" icon="table-cells" href="/api-reference/coverage-report">
+    Generate OWASP coverage details.
+  </Card>
+</CardGroup>
+
+## Prerequisites
+
+- Node.js 20 or newer.
+- AspidaSec installed from npm or available from the repository.
+- Scanner dependencies for the checks you want to run.
+- **Absolute paths.** Tools that take `repoRoot` require an absolute path, not a relative one.
+
+## Conventions
+
+| Convention | Detail |
+| --- | --- |
+| Transport | stdio |
+| `language` | Optional enum `en` \| `id` on most tools. |
+| `repoRoot` | Absolute path string, required where listed. |
+| Stringified args | `finding` / `findings` / `scannerCoverage` are passed as JSON **strings**, not objects. |
+| Default return | JSON, unless `format` selects `markdown` or `sarif`. |
+
+## Connect a client
+
+<Card title="Set up your assistant" icon="plug" href="/integrations/mcp-overview">
+  Configuration for Claude, Cursor, VS Code, and Windsurf.
+</Card>
